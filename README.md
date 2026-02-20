@@ -1,5 +1,10 @@
 # LandBOSSE
 
+[![PyPI version](https://badge.fury.io/py/NREL-landbosse.svg)](https://badge.fury.io/py/NREL-landbosse)
+[![Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![image](https://img.shields.io/pypi/pyversions/NREL-landbosse.svg)](https://pypi.python.org/pypi/NREL-landbosse)
+[![Jupyter Book](https://jupyterbook.org/badge.svg)](https://nlrwindsystems.github.io/NREL-landbosse)
+
 ## Welcome to LandBOSSE!
 
 The Land-based Balance-of-System Systems Engineering (LandBOSSE) model is a systems engineering tool that estimates the balance-of-system (BOS) costs associated with installing utility scale wind plants (10, 1.5 MW turbines or larger). It can execute on macOS and Windows. At this time, for both platforms, it is a command line tool that needs to be accessed from the command line.
