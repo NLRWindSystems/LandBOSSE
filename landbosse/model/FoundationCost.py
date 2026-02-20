@@ -59,8 +59,8 @@ class FoundationCost(CostModule):
         Parameters
         ----------
         input_dict : dict
-            The input dictionary with key value pairs described in the
-            class documentation. Should contain the following:
+            The input dictionary with key value pairs:
+
                 depth
                     (int) depth of foundation [in m]
                 component_data
@@ -103,8 +103,8 @@ class FoundationCost(CostModule):
                         (pd.DataFrame) TODO: Formal definition for rsmeans?
 
         output_dict : dict
-            The output dictionary with key value pairs as found on the
-            output documentation. Contains the following:
+            The output dictionary with key value pairs:
+
                 F_dead_kN_per_turbine
                     (float) foundation dead load [in kN]
                 F_horiz_kN_per_turbine

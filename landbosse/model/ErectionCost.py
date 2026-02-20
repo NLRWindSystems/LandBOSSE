@@ -108,8 +108,7 @@ class ErectionCost(CostModule):
         Parameters
         ----------
         input_dict : dict
-            The input dictionary with key value pairs described in the
-            class documentation. Expected elements are as follows:
+            The input dictionary with key value pairs:
 
             construct_duration
                 (int) duration of construction (in months)
