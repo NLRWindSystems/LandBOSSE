@@ -110,46 +110,46 @@ class ErectionCost(CostModule):
         input_dict : dict
             The input dictionary with key value pairs:
 
-            construct_duration
-                (int) duration of construction (in months)
-            rate_of_deliveries
-                (int) rate of deliveries (number of turbines per week)
-            weather_window
-                (pd.DataFrame) window of weather data for project of interest.
-            wind_shear_exponent
-                (float) The exponent of the power law wind shear calculation
-            overtime_multiplier:
-                (float) multiplier for overtime work (working 60 hr/wk vs 40 hr/wk)
-            allow_same_flag
-                (bool) boolean flag to indicate whether choosing same base and
-                topping crane is allowed.
-            operational_construction_time
-                (int) Number of hours per day when construction can happen.
-            time_construct
-                (int) 'normal' (10 hours per day) or 'long' (24 hours per day)
-            project_data
-                (dict) dictionary of pd.DataFrame for each of the csv files loaded
-                for the project. The project_data dictionary contains key value pairs
-                of the following:
+                construct_duration
+                    (int) duration of construction (in months)
+                rate_of_deliveries
+                    (int) rate of deliveries (number of turbines per week)
+                weather_window
+                    (pd.DataFrame) window of weather data for project of interest.
+                wind_shear_exponent
+                    (float) The exponent of the power law wind shear calculation
+                overtime_multiplier:
+                    (float) multiplier for overtime work (working 60 hr/wk vs 40 hr/wk)
+                allow_same_flag
+                    (bool) boolean flag to indicate whether choosing same base and
+                    topping crane is allowed.
+                operational_construction_time
+                    (int) Number of hours per day when construction can happen.
+                time_construct
+                    (int) 'normal' (10 hours per day) or 'long' (24 hours per day)
+                project_data
+                    (dict) dictionary of pd.DataFrame for each of the csv files loaded
+                    for the project. The project_data dictionary contains key value pairs
+                    of the following:
 
-                crane_specs:
-                    (pd.DateFrame) Specs about the cranes for the cost calculations.
-                equip
-                    (pd.DataFrame) Equipment needed for various tasks
-                crew
-                    (pd.DataFrame) Crew configurations needed for various tasks
-                components
-                    (pd.DataFrame) components to build a wind turbine
-                project
-                    (pd.DataFrame) The project of the project to calculate.
-                equip_price
-                    (pd.DatFrame) Prices to operate various pieces of equipment.
-                crew_price
-                    (pd.DataFrame) THe prices for various crews
-                material_price
-                    (pd.DatFrame) Prices for various materials used during erection.
-                rsmeans
-                    (p.DataFrame) RSMeans data
+                        crane_specs:
+                            (pd.DateFrame) Specs about the cranes for the cost calculations.
+                        equip
+                            (pd.DataFrame) Equipment needed for various tasks
+                        crew
+                            (pd.DataFrame) Crew configurations needed for various tasks
+                        components
+                            (pd.DataFrame) components to build a wind turbine
+                        project
+                            (pd.DataFrame) The project of the project to calculate.
+                        equip_price
+                            (pd.DatFrame) Prices to operate various pieces of equipment.
+                        crew_price
+                            (pd.DataFrame) THe prices for various crews
+                        material_price
+                            (pd.DatFrame) Prices for various materials used during erection.
+                        rsmeans
+                            (p.DataFrame) RSMeans data
         output_dict : dict
             The output dictionary with key value pairs as found on the
                 output documentation.

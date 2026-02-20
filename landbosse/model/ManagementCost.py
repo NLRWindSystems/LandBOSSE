@@ -6,76 +6,6 @@ class ManagementCost:
     This class models management costs of a wind plant. Its inputs are
     configured with a dictionary with the key value pairs being the
     inputs into the model.
-
-    See the input_output documentation below for a description of the key
-    names for this inputs values dictionary.
-
-    The INPUT keys are the following:
-
-    project_value_usd
-        (float) Sum of all other BOS costs (e.g., roads, foundations, erection)
-
-    foundation_cost_usd
-        (float) Foundation costs for the project
-
-    construct_duration
-        (float) Project duration (in months)
-
-    num_hwy_permits
-        (int) Number of highway permits needed for the project
-
-    markup_constants
-        (dict) Markup and contingency costs that can be set by user
-        (see the markup_contingency method for key names to use in this dictionary)
-
-    num_turbines
-        (int) Number of turbines for project
-
-    project_size_megawatts
-        (float) Total power output of project in megawatts
-
-    hub_height_meters
-        (float) Hub height for all turbines in meters
-
-    project_size_megawatts
-
-        (float) Total power output of project in megawatts
-
-    num_access_roads
-        (int) Number of access roads into project site
-
-    site_facility_building_area_df
-        (pd.DataFrame) Building areas dataframe. This should be loaded
-        from a .csv file on the filesystem.
-
-    The OUTPUT keys are the following
-
-    insurance
-        (float) The cost of insurance for the project. USD. Eqn. 3.4.1
-
-    construction_permitting
-        (float) The cost of the construction permitting. USD.
-
-    project_management
-        (float) The cost of the project management. USD.
-
-    bonding
-        (float) The cost of binding for the project. USD.
-
-    engineering_usd
-        (float) Site-specific engineering costs for foundations and collection. USD.
-
-    site_security_usd
-        (float) estimate cost of site security. USD.
-
-    site_facility
-        (float) Site facility costs. USD.
-
-    markup_contingency
-        (float) Markup contingency costs. USD.
-
-    total_cost
-        (float) Total cost of everything else
     """
 
     def __init__(self, input_dict, output_dict, project_name):
@@ -87,10 +17,54 @@ class ManagementCost:
         Parameters
         ----------
         input_dict : dict
-            Dictionary with the inputs key / value pairs
+            Dictionary with the inputs key / value pairs:
+
+                project_value_usd
+                    (float) Sum of all other BOS costs (e.g., roads, foundations, erection)
+                foundation_cost_usd
+                    (float) Foundation costs for the project
+                construct_duration
+                    (float) Project duration (in months)
+                num_hwy_permits
+                    (int) Number of highway permits needed for the project
+                markup_constants
+                    (dict) Markup and contingency costs that can be set by user
+                    (see the markup_contingency method for key names to use in this dictionary)
+                num_turbines
+                    (int) Number of turbines for project
+                project_size_megawatts
+                    (float) Total power output of project in megawatts
+                hub_height_meters
+                    (float) Hub height for all turbines in meters
+                project_size_megawatts
+                    (float) Total power output of project in megawatts
+                num_access_roads
+                    (int) Number of access roads into project site
+                site_facility_building_area_df
+                    (pd.DataFrame) Building areas dataframe. This should be loaded
+                    from a .csv file on the filesystem.
 
         output_dict : dict
-            Dictionary with output key / value pairs.
+            Dictionary with output key / value pairs:
+
+                insurance
+                    (float) The cost of insurance for the project. USD. Eqn. 3.4.1
+                construction_permitting
+                    (float) The cost of the construction permitting. USD.
+                project_management
+                    (float) The cost of the project management. USD.
+                bonding
+                    (float) The cost of binding for the project. USD.
+                engineering_usd
+                    (float) Site-specific engineering costs for foundations and collection. USD.
+                site_security_usd
+                    (float) estimate cost of site security. USD.
+                site_facility
+                    (float) Site facility costs. USD.
+                markup_contingency
+                    (float) Markup contingency costs. USD.
+                total_cost
+                    (float) Total cost of everything else
         """
         self.in_distributed_mode = 'override_total_management_cost' in input_dict
         self.validate_inputs(input_dict)
