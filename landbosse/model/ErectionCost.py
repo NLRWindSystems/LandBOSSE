@@ -53,112 +53,54 @@ def point_in_polygon(pt, poly):
 
 class ErectionCost(CostModule):
     """
-        ErectionCost.py
-        Created by Annika Eberle and Owen Roberts on Mar. 16, 2018
-        Created by Alicia Key and Parangat Bhaskar on 01 June 2019
+    ErectionCost.py
+    Created by Annika Eberle and Owen Roberts on Mar. 16, 2018
+    Created by Alicia Key and Parangat Bhaskar on 01 June 2019
 
-        Calculates the costs for erecting the tower and rotor nacelle assembly for land-based wind projects
-        (items in brackets are not yet implemented)
+    Calculates the costs for erecting the tower and rotor nacelle assembly for land-based wind projects
+    (items in brackets are not yet implemented) using the following steps:
 
-        [Get terrain complexity]
-        [Get site complexity]
-        Get number of turbines
-        Get duration of construction
-        Get rate of deliveries
-        Get daily hours of operation
-        Get turbine rating
-        Get component specifications
-        [Get crane availability]
+    * [Get terrain complexity]
+    * [Get site complexity]
+    * Get number of turbines
+    * Get duration of construction
+    * Get rate of deliveries
+    * Get daily hours of operation
+    * Get turbine rating
+    * Get component specifications
+    * [Get crane availability]
 
-        Get price data
-            Get labor mobilization_prices by crew type
-            Get labor prices by crew type
-            Get equipment mobilization prices by equipment type
-            Get fuel prices
-            Get equipment prices by equipment type
+    Price data is determined by:
 
-        Calculate operational time for lifting components
+    * Getting labor mobilization_prices by crew type
+    * Getting labor prices by crew type
+    * Getting equipment mobilization prices by equipment type
+    * Getting fuel prices
+    * Getting equipment prices by equipment type
 
-        Estimate potential time delays due to weather
+    Calculate operational time for lifting components
 
-        Calculate required labor and equip for erection (see equip_labor_by_type method below)
-            Calculate number of workers by crew type
-            Calculate man hours by crew type
-            Calculate number of equipment by equip type
-            Calculate equipment hours by equip type
+    Estimate potential time delays due to weather
 
-        Calculate erection costs by type (see methods below)
-            Calculate mobilization costs as function of number of workers by crew type, number of equipment by equipment type, labor_mobilization_prices, and equip_mobilization_prices
-            Calculate labor costs as function of man_hours and labor prices by crew type
-            Calculate fuel costs as function of equipment hours by equipment type and fuel prices by equipment type
-            Calculate equipment costs as function of equipment hours by equipment type and equipment prices by equipment type
+    Calculate required labor and equip for erection (see equip_labor_by_type method below):
 
-        Sum erection costs over all types to get total costs
+    * Calculate number of workers by crew type
+    * Calculate man hours by crew type
+    * Calculate number of equipment by equip type
+    * Calculate equipment hours by equip type
 
-        Find the least cost option
+    Calculate erection costs by type (see methods below):
 
-        Return total erection costs
+    * Calculate mobilization costs as function of number of workers by crew type, number of equipment by equipment type, labor_mobilization_prices, and equip_mobilization_prices
+    * Calculate labor costs as function of man_hours and labor prices by crew type
+    * Calculate fuel costs as function of equipment hours by equipment type and fuel prices by equipment type
+    * Calculate equipment costs as function of equipment hours by equipment type and equipment prices by equipment type
 
-        Keys in the input dictionary are the following:
+    Sum erection costs over all types to get total costs
 
-        construct_duration
-            (int) duration of construction (in months)
+    Find the least cost option
 
-        rate_of_deliveries
-            (int) rate of deliveries (number of turbines per week)
-
-        weather_window
-            (pd.DataFrame) window of weather data for project of interest.
-
-        wind_shear_exponent
-    -        (float) The exponent of the power law wind shear calculation
-
-        overtime_multiplier:
-            (float) multiplier for overtime work (working 60 hr/wk vs 40 hr/wk)
-
-        allow_same_flag
-            (bool) boolean flag to indicate whether choosing same base and
-            topping crane is allowed.
-
-        operational_construction_time
-            (int) Number of hours per day when construction can happen.
-
-        time_construct
-            (int) 'normal' (10 hours per day) or 'long' (24 hours per day)
-
-        project_data
-            (dict) dictionary of pd.DataFrame for each of the csv files loaded
-            for the project.
-
-        In turn, the project_data dictionary contains key value pairs of the
-        following:
-
-        crane_specs:
-            (pd.DateFrame) Specs about the cranes for the cost calculations.
-
-        equip
-            (pd.DataFrame) Equipment needed for various tasks
-
-        crew
-            (pd.DataFrame) Crew configurations needed for various tasks
-
-        components
-            (pd.DataFrame) components to build a wind turbine
-
-        project
-            (pd.DataFrame) The project of the project to calculate.
-
-        equip_price
-            (pd.DatFrame) Prices to operate various pieces of equipment.
-
-        crew_price
-            (pd.DataFrame) THe prices for various crews
-
-        material_price
-            (pd.DatFrame) Prices for various materials used during erection.
-
-        rsmeans
-            (p.DataFrame) RSMeans data
+    Return total erection costs
     """
 
     def __init__(self, input_dict, output_dict, project_name):
@@ -167,11 +109,51 @@ class ErectionCost(CostModule):
         ----------
         input_dict : dict
             The input dictionary with key value pairs described in the
-            class documentation
+            class documentation. Expected elements are as follows:
 
+            construct_duration
+                (int) duration of construction (in months)
+            rate_of_deliveries
+                (int) rate of deliveries (number of turbines per week)
+            weather_window
+                (pd.DataFrame) window of weather data for project of interest.
+            wind_shear_exponent
+                (float) The exponent of the power law wind shear calculation
+            overtime_multiplier:
+                (float) multiplier for overtime work (working 60 hr/wk vs 40 hr/wk)
+            allow_same_flag
+                (bool) boolean flag to indicate whether choosing same base and
+                topping crane is allowed.
+            operational_construction_time
+                (int) Number of hours per day when construction can happen.
+            time_construct
+                (int) 'normal' (10 hours per day) or 'long' (24 hours per day)
+            project_data
+                (dict) dictionary of pd.DataFrame for each of the csv files loaded
+                for the project. The project_data dictionary contains key value pairs
+                of the following:
+
+                crane_specs:
+                    (pd.DateFrame) Specs about the cranes for the cost calculations.
+                equip
+                    (pd.DataFrame) Equipment needed for various tasks
+                crew
+                    (pd.DataFrame) Crew configurations needed for various tasks
+                components
+                    (pd.DataFrame) components to build a wind turbine
+                project
+                    (pd.DataFrame) The project of the project to calculate.
+                equip_price
+                    (pd.DatFrame) Prices to operate various pieces of equipment.
+                crew_price
+                    (pd.DataFrame) THe prices for various crews
+                material_price
+                    (pd.DatFrame) Prices for various materials used during erection.
+                rsmeans
+                    (p.DataFrame) RSMeans data
         output_dict : dict
             The output dictionary with key value pairs as found on the
-            output documentation.
+                output documentation.
         """
         self.input_dict = input_dict
         self.output_dict = output_dict
@@ -1160,8 +1142,8 @@ class ErectionCost(CostModule):
         Finds the minimum cost crane(s) based on the aggregated labor, equipment,
         mobilization and fuel costs for erection.
 
-        self.output_dict keys used as inputs
-        ------------------------------------
+        self.output_dict keys used as inputs:
+        
         separate_basetop : pd.DataFrame
             data frame with aggregated labor, equipment, mobilization, and fuel costs for utilizing
             separate cranes for base and topping.
