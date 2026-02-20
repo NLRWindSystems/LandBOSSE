@@ -11,13 +11,12 @@ from .WeatherDelay import WeatherDelay as WD
 
 class FoundationCost(CostModule):
     """
-    **FoundationCost.py**
+    Calculates the costs of constructing foundations for land-based wind projects
+    *(items in brackets are not yet implemented)*:
+    
+    * Created by Annika Eberle and Owen Roberts on Apr. 3, 2018
+    * Refactored by Parangat Bhaskar and Alicia Key on June 3, 2019
 
-    - Created by Annika Eberle and Owen Roberts on Apr. 3, 2018
-
-    - Refactored by Parangat Bhaskar and Alicia Key on June 3, 2019
-
-    \nCalculates the costs of constructing foundations for land-based wind projects *(items in brackets are not yet implemented)*:
 
     * Get number of turbines
     * Get duration of construction
@@ -39,141 +38,20 @@ class FoundationCost(CostModule):
     * [Use region to determine weather data]
 
 
-    \n\nGiven below is the set of calculations carried out in this module:
+    Given below is the set of calculations carried out in this module:
 
     * Calculate the foundation loads using the rotor diameter, hub height, and turbine rating
-
     * Determine the foundation size based on the foundation loads, buoyant foundation design flag, and type of tower technology
-
     * Estimate the amount of material needed for foundation construction based on foundation size and number of turbines
-
     * Estimate the amount of time required to construct foundation based on foundation size, hours of operation, duration of construction, and number of turbines
-
     * Estimate the additional amount of time for weather delays (currently only assessing wind delays) based on hourly weather data, construction time, hours of operation, and season of construction
-
     * Estimate the amount of labor required for foundation construction based on foundation size, construction time, and weather delay
-        * Calculate number of workers by crew type
-        * Calculate man hours by crew type
-
+      * Calculate number of workers by crew type
+      * Calculate man hours by crew type
     * Estimate the amount of equipment needed for foundation construction based on foundation size, construction time, and weather delay
-        * Calculate number of equipment by equip type
-        * Calculate equipment hours by equip type
-
-    - Calculate the total foundation cost based on amount of equipment, amount of labor, amount of material, and price data.
-
-
-    **Keys in the input dictionary are the following:**
-
-    depth
-        (int) depth of foundation [in m]
-
-
-    component_data
-        (pd.DataFrame) data frame with wind turbine component data
-
-    def __init__(self, input_dict, output_dict, project_name):
-        self.input_dict = input_dict
-        self.output_dict = output_dict
-        self.project_name = project_name
-
-
-    num_turbines
-        (int) total number of turbines in wind farm
-
-    duration_construction
-        (int) estimated construction time in months
-
-    num_delays
-        (int) Number of delay events
-
-    avg_hours_per_delay
-        (float) Average hours per delay event
-
-    std_dev_hours_per_delay
-        (float) Standard deviation from average hours per delay event
-
-    delay_speed_m_per_s
-        (float) wind speed above which weather delays kick in
-
-    start_delay_hours
-        (int)
-
-    mission_time_hours
-        (int)
-
-    gust_wind_speed_m_per_s
-        (float)
-
-    wind_height_of_interest_m
-        (int)
-
-    wind_shear_exponent
-        (float)
-
-    season_construct
-        list of seasons (like ['spring', 'summer']) for the construction.
-
-    time_construct
-        list of time windows for constructions. Use ['normal'] for a
-        0800 to 1800 schedule 10 hour schedule. Use ['long'] for an
-        overnight 1800 to 2359, 0000 to 0759 overnight schedule. Use
-        ['normal', 'long'] for a 24-hour schedule.
-
-    operational_hrs_per_day
-        (float)
-
-
-    material_price
-        (pd.DataFrame) dataframe containing foundation cost related material prices
-
-    rsmeans
-        (pd.DataFrame) TODO: Formal definition for rsmeans?
-
-
-    **Keys in the output dictionary are the following:**
-
-    F_dead_kN_per_turbine
-        (float) foundation dead load [in kN]
-
-    F_horiz_kN_per_turbine
-        (float) total lateral load [kN]
-
-    M_tot_kN_m_per_turbine
-        (float) Moment [kN.m]
-
-    Radius_o_m
-        (float) foundation radius based on overturning moment [in m]
-
-    Radius_g_m
-        (float) foundation radius based on gapping [in m]
-
-    Radius_b_m
-        (float) foundation radius based on bearing pressure [in m]
-
-    Radius_m
-        (float) largest foundation radius based on all three foundation design criteria: moment, gapping, bearing [in m]
-
-    foundation_volume_concrete_m3_per_turbine
-        (float) volume of a round, raft foundation [in m^3]
-
-    steel_mass_short_ton
-        (float) short tons of reinforcing steel
-
-    material_needs_per_turbine
-        (pd.DataFrame) table containing material needs info for -> Steel - rebar, Concrete 5000 psi, Excavated dirt, Backfill.
-
-    operation_data
-        (pd.DataFrame) TODO: What's the best one line definition for this?
-
-
-    **TODO: Weather delay set of outputs -> ask Alicia for formal definitions of these keys.**
-
-    total_foundation_cost
-        (pd.DataFrame) summary of foundation costs (in USD) broken down into 4 main categories:
-        1. Equipment Rental
-        2. Labor
-        3. Materials
-        4. Mobilization
+      * Calculate number of equipment by equip type
+      * Calculate equipment hours by equip type
+    * Calculate the total foundation cost based on amount of equipment, amount of labor, amount of material, and price data.
     """
 
     def __init__(self, input_dict, output_dict, project_name):
@@ -182,11 +60,80 @@ class FoundationCost(CostModule):
         ----------
         input_dict : dict
             The input dictionary with key value pairs described in the
-            class documentation
+            class documentation. Should contain the following:
+                depth
+                    (int) depth of foundation [in m]
+                component_data
+                    (pd.DataFrame) data frame with wind turbine component data
+
+                    num_turbines
+                        (int) total number of turbines in wind farm
+                    duration_construction
+                        (int) estimated construction time in months
+                    num_delays
+                        (int) Number of delay events
+                    avg_hours_per_delay
+                        (float) Average hours per delay event
+                    std_dev_hours_per_delay
+                        (float) Standard deviation from average hours per delay event
+                    delay_speed_m_per_s
+                        (float) wind speed above which weather delays kick in
+                    start_delay_hours
+                        (int)
+                    mission_time_hours
+                        (int)
+                    gust_wind_speed_m_per_s
+                        (float)
+                    wind_height_of_interest_m
+                        (int)
+                    wind_shear_exponent
+                        (float)
+                    season_construct
+                        list of seasons (like ['spring', 'summer']) for the construction.
+                    time_construct
+                        list of time windows for constructions. Use ['normal'] for a
+                        0800 to 1800 schedule 10 hour schedule. Use ['long'] for an
+                        overnight 1800 to 2359, 0000 to 0759 overnight schedule. Use
+                        ['normal', 'long'] for a 24-hour schedule.
+                    operational_hrs_per_day
+                        (float)
+                    material_price
+                        (pd.DataFrame) dataframe containing foundation cost related material prices
+                    rsmeans
+                        (pd.DataFrame) TODO: Formal definition for rsmeans?
 
         output_dict : dict
             The output dictionary with key value pairs as found on the
-            output documentation.
+            output documentation. Contains the following:
+                F_dead_kN_per_turbine
+                    (float) foundation dead load [in kN]
+                F_horiz_kN_per_turbine
+                    (float) total lateral load [kN]
+                M_tot_kN_m_per_turbine
+                    (float) Moment [kN.m]
+                Radius_o_m
+                    (float) foundation radius based on overturning moment [in m]
+                Radius_g_m
+                    (float) foundation radius based on gapping [in m]
+                Radius_b_m
+                    (float) foundation radius based on bearing pressure [in m]
+                Radius_m
+                    (float) largest foundation radius based on all three foundation design criteria: moment, gapping, bearing [in m]
+                foundation_volume_concrete_m3_per_turbine
+                    (float) volume of a round, raft foundation [in m^3]
+                steel_mass_short_ton
+                    (float) short tons of reinforcing steel
+                material_needs_per_turbine
+                    (pd.DataFrame) table containing material needs info for -> Steel - rebar, Concrete 5000 psi, Excavated dirt, Backfill.
+                operation_data
+                    (pd.DataFrame) TODO: What's the best one line definition for this?
+                total_foundation_cost
+                    (pd.DataFrame) summary of foundation costs (in USD) broken down into 4 main categories:
+                    1. Equipment Rental
+                    2. Labor
+                    3. Materials
+                    4. Mobilization
+                **TODO: Weather delay set of outputs -> ask Alicia for formal definitions of these keys.**
         """
 
         self.input_dict = input_dict
@@ -608,21 +555,15 @@ class FoundationCost(CostModule):
         """
         Function to calculate wind delay for foundations.
 
-        Keys in weather_delay_input_data
-        --------------------------------
-        weather_window
-
-        duration_construction
-
-        start_delay
-
-        critical_wind_speed
-
-        operational_hrs_per_day
-
-        height_interest
-
-        wind_shear_exponent
+        Keys in weather_delay_input_data:
+        
+        * weather_window
+        * duration_construction
+        * start_delay
+        * critical_wind_speed
+        * operational_hrs_per_day
+        * height_interest
+        * wind_shear_exponent
         """
 
         # construct WeatherDelay module
@@ -641,30 +582,19 @@ class FoundationCost(CostModule):
         """
         Function to calculate the total foundation cost.
 
-        Keys in input dictionary
-        ------------------------
-        pd.DataFrame
-            material_needs_per_turbine
-
-        pd.DataFrame
-            material_price
-
-        pd.DataFrame
-            operation_data
-
-        wind_delay_time
-
-        operational_hrs_per_day
-
-        wind_multiplier
-
-        pd.DataFrame
-            rsmeans
+        Keys in input dictionary:
+        
+        * material_needs_per_turbine (pd.DataFrame)
+        * material_price(pd.DataFrame)
+        * operation_data (pd.DataFrame)
+        * wind_delay_time
+        * operational_hrs_per_day
+        * wind_multiplier (pd.DataFrame)
+        * rsmeans
 
 
         Returns
         -------
-
         (pd.DataFrame) total_foundation_cost
 
 
