@@ -119,16 +119,13 @@ class ManagementCost:
         Eqn. 3.4.1
 
         Includes:
-
-        Builder's risk
-
-        General liability
-
-        Umbrella policy
-
-        Professional liability
-
-        It uses only the self.project_value attribute in calculations.
+        
+        * Builder's risk
+        * General liability
+        * Umbrella policy
+        * Professional liability
+        
+        It uses only the ``project_value`` attribute in calculations.
 
         :math:`C_I = 0.0056 * V_p`
 
@@ -173,27 +170,17 @@ class ManagementCost:
         Calculate project management costs based on project size; equation based on empirical data from industry.
         Includes:
 
-        Project manager and assistant project manager for site
-
-        Site managers for civil, electrical, and erection
-
-        QA/QC management
-
-        QA/QC inspections for civil, structural, electrical, and mechanical
-
-        Administrative support for the site
-
-        Health and safety supervisors
-
-        Environmental supervisors
-
-        Office equipment & materials
-
-        Site radios, communication, and vehicles
-
-        Management team per diem and travel
-
-        Legal and public relations
+        * Project manager and assistant project manager for site
+        * Site managers for civil, electrical, and erection
+        * QA/QC management
+        * QA/QC inspections for civil, structural, electrical, and mechanical
+        * Administrative support for the site
+        * Health and safety supervisors
+        * Environmental supervisors
+        * Office equipment & materials
+        * Site radios, communication, and vehicles
+        * Management team per diem and travel
+        * Legal and public relations
 
         Returns
         -------
@@ -213,15 +200,11 @@ class ManagementCost:
         """
         Calculate mark-up and contingency costs based on project value. Includes:
 
-        Markup contingency
-
-        Markup warranty management
-
-        Sales and use tax
-
-        Markup overhead
-
-        Markup profit margin
+        * Markup contingency
+        * Markup warranty management
+        * Sales and use tax
+        * Markup overhead
+        * Markup profit margin
 
         Returns
         -------
@@ -285,53 +268,39 @@ class ManagementCost:
         Uses empirical data to estimate cost of site facilities and security, including
 
 
-        Site facilities:
+        * Site facilities:
 
-        Building design and construction
+          * Building design and construction
+          * Drilling and installing a water well, including piping
+          * Electric power for a water well
+          * Septic tank and drain field
 
-        Drilling and installing a water well, including piping
+        * Site security:
 
-        Electric power for a water well
-
-        Septic tank and drain field
-
-
-        Site security:
-
-        Constructing and reinstating the compound
-
-        Constructing and reinstating the batch plant site
-
-        Setting up and removing the site offices for the contractor, turbine supplier, and owner
-
-        Restroom facilities
-
-        Electrical and telephone hook-up
-
-        Monthly office costs
-
-        Signage for project information, safety and directions
-
-        Cattle guards and gates
-
-        Number of access roads
+          * Constructing and reinstating the compound
+          * Constructing and reinstating the batch plant site
+          * Setting up and removing the site offices for the contractor, turbine supplier, and owner
+          * Restroom facilities
+          * Electrical and telephone hook-up
+          * Monthly office costs
+          * Signage for project information, safety and directions
+          * Cattle guards and gates
+          * Number of access roads
 
 
 
         In main.py, a csv is loaded into a Pandas dataframe. The columns of the
         dataframe must be:
 
-        Size Min (MW)
-            Minimum power output for a plant that needs a certain size of
-            building.
-
-        Size Max (MW)
-            Maximum power output of a plant that need a certain size of
-            building.
-
-        Building Area (sq. ft.)
-            The area of the building needed to provide O & M support to plants
-            with power output between "Size Min (MW)" and "Size Max (MW)".
+            Size Min (MW)
+                Minimum power output for a plant that needs a certain size of
+                building.
+            Size Max (MW)
+                Maximum power output of a plant that need a certain size of
+                building.
+            Building Area (sq. ft.)
+                The area of the building needed to provide O & M support to plants
+                with power output between "Size Min (MW)" and "Size Max (MW)".
 
         Returns
         -------
