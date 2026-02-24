@@ -7,33 +7,26 @@ from .CostModule import CostModule
 
 class SubstationCost(CostModule):
     """
-    **SubstationCost.py**
-
-    - Created by Annika Eberle and Owen Roberts on Dec. 17, 2018
-
-    - Refactored by Parangat Bhaskar and Alicia Key on  June 3, 2019
-
     Calculates the costs associated with substations for land-based wind projects *(module is currently based on curve fit of empirical data)*
 
+    Calculation consists of the following steps:
+    
+    * Get project size: ``project_size_megawatts = num_turbines * turbine_rating_kilowatt / kilowatt_per_megawatt``
+    * Get interconnect voltage
 
-    Get project size (project_size_megawatts = num_turbines * turbine_rating_kilowatt / kilowatt_per_megawatt)
-    Get interconnect voltage
+    Keys in the input dictionary are the following:
 
-    Return total substation costs
+    interconnect_voltage_kV : int
+        project interconnection voltage to substation [in kV
+    project_size_megawatts : int
+        total project size [in MW]
 
-    \n\n**Keys in the input dictionary are the following:**
+    Keys in the output dictionary are the following:
 
-    interconnect_voltage_kV
-        (int) project interconnection voltage to substation [in kV]
+    substation_cost : float
+        cost of substation [in USD]
 
-    project_size_megawatts
-        (int) total project size [in MW]
-
-    \n\n**Keys in the output dictionary are the following:**
-
-    substation_cost
-        (float) cost of substation [in USD]
-
+    Created by Annika Eberle and Owen Roberts on Dec. 17, 2018 and refactored by Parangat Bhaskar and Alicia Key on  June 3, 2019
 
     """
     def __init__(self, input_dict, output_dict, project_name):
@@ -55,22 +48,21 @@ class SubstationCost(CostModule):
 
     def calculate_costs(self, calculate_costs_input_dict , calculate_costs_output_dict):
         """
-        Function to calculate Substation Cost in USD
+        Calculates the total substation cost in USD
 
         Parameters
+        ----------
+        Uses the following from ``calculate_costs_input_dict``
+
+            interconnect_voltage_kV : float
+                Interconnection voltage, in kV.
+            project_size_megawatts : float
+                Project capacity, in MW.
+
+        Returns
         -------
-        interconnect_voltage_kV
-            (in kV)
-
-        project_size_megawatts
-            (in MW)
-
-
-        Returns:
-        -------
-        substation_cost
-            (in USD)
-
+        substation_cost : float
+            Total substation cost, in USD.
         """
 
         # Run in utility mode if number of turbines is > 10:
@@ -95,11 +87,11 @@ class SubstationCost(CostModule):
         Creates a list of dictionaries which can be used on their own or
         used to make a dataframe.
 
-        Must be called after self.run_module()
+        Must be called after :py:meth:`run_module`.
 
         Returns
         -------
-        list(dict)
+        list[dict]
             A list of dicts, with each dict representing a row of the data.
         """
         result = []
@@ -126,10 +118,6 @@ class SubstationCost(CostModule):
     def run_module(self):
         """
         Runs the SubstationCost module and populates the IO dictionaries with calculated values.
-
-         Parameters
-        ----------
-        <None>
 
         Returns
         -------

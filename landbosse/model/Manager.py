@@ -25,12 +25,10 @@ class Manager:
         """
         This initializer sets up the instance variables of:
 
-        self.cost_modules: A list of cost module instances. Each of the
+        * ``cost_modules``: A list of cost module instances. Each of the
             instances must implement the method input_output.
-
-        self.input_dict: A placeholder for the inputs dictionary
-
-        self.output_dict: A placeholder for the output dictionary
+        * ``input_dict``: A placeholder for the inputs dictionary
+        * ``output_dict``: A placeholder for the output dictionary
         """
         self.input_dict = input_dict
         self.output_dict = output_dict

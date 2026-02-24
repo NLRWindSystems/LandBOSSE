@@ -15,16 +15,16 @@ m_per_ft = 0.3048
 
 class Point(object):
     def __init__(self, x, y):
-        if type(x) == type(pd.Series(dtype=np.float64)):
+        if isinstance(x, pd.Series):
             self.x = float(x.values[0])
             self.y = float(y.values[0])
-        elif type(x) == type(np.array([])):
+        elif isinstance(x, np.ndarray):
             self.x = float(x[0])
             self.y = float(y[0])
-        elif type(x) == type(int(0)):
+        elif isinstance(x, int):
             self.x = float(x)
             self.y = float(y)
-        elif type(x) == type(float(0.0)):
+        elif isinstance(x, float):
             self.x = x
             self.y = y
         else:
@@ -53,10 +53,6 @@ def point_in_polygon(pt, poly):
 
 class ErectionCost(CostModule):
     """
-    ErectionCost.py
-    Created by Annika Eberle and Owen Roberts on Mar. 16, 2018
-    Created by Alicia Key and Parangat Bhaskar on 01 June 2019
-
     Calculates the costs for erecting the tower and rotor nacelle assembly for land-based wind projects
     (items in brackets are not yet implemented) using the following steps:
 
@@ -95,12 +91,11 @@ class ErectionCost(CostModule):
     * Calculate labor costs as function of man_hours and labor prices by crew type
     * Calculate fuel costs as function of equipment hours by equipment type and fuel prices by equipment type
     * Calculate equipment costs as function of equipment hours by equipment type and equipment prices by equipment type
+    * Sum erection costs over all types to get total costs
+    * Find the least cost option
 
-    Sum erection costs over all types to get total costs
-
-    Find the least cost option
-
-    Return total erection costs
+    Created by Annika Eberle and Owen Roberts on Mar. 16, 2018 and modified by Alicia Key and
+    Parangat Bhaskar on 01 June 2019
     """
 
     def __init__(self, input_dict, output_dict, project_name):
@@ -191,11 +186,11 @@ class ErectionCost(CostModule):
         Creates a list of dictionaries which can be used on their own or
         used to make a dataframe.
 
-        Must be called after self.run_module()
+        Must be called after :py:meth:`run_module`.
 
         Returns
         -------
-        list(dict)
+        result : list[dict]
             A list of dicts, with each dict representing a row of the data.
         """
         result = []
@@ -404,26 +399,15 @@ class ErectionCost(CostModule):
         """
         Calculates operation time required for each type of equipment included in project data.
 
-        self.output_dict['possible_cranes'] = possible_cranes
-        self.output_dict['erection_operation_time'] = erection_operation_time_dict
-
-        self.input_dict keys
-        ---------------------
-        construct_duration : int
-            int duration of construction (in months)
-
-        operational_construction_time : int
-            Number of hours each day that are available for construction hours.
-
-        self.output_dict keys
-        ---------------------
-        self.output_dict['possible_cranes'] : possible_cranes (with geometry)
-        self.output_dict['erection_operation_time'] : Operation time for each crane.
+        Uses the ``construction_duration`` and ``operational_construction_time`` from the ``input_dict``
+        to determine which cranes to use to meet construction needs.
 
         Returns
         -------
-        pd.DataFrame, pd.DataFrame
-            Dataframe of possible_cranes (with geometry) and operational time for cranes
+        possible_cranes : pd.DataFrame
+            Dataframe of possible_cranes with geometry
+        operation_time : pd.DataFrame
+            Operational time by crane
         """
         project_data = self.input_dict["project_data"]
         construct_duration = self.input_dict["construct_duration"]  # Total project construction time (months)
@@ -569,22 +553,19 @@ class ErectionCost(CostModule):
         """
         Calculates time for the offload operation.
 
-        self.input_dict keys
-        --------------------
-        project_data : dict
-            dict of data frames for each of the csv files loaded for the project
+        Uses the following from ``input_dict``:
+            project_data : dict
+                dict of data frames for each of the csv files loaded for the project
+            operational_construction_time : int
+                operational hours of construction
+            rate_of_deliveries : int
+                rate of deliveries of turbines ready for erection.
 
-        operational_construction_time : int
-            operational hours of construction
-
-        rate_of_deliveries : int
-            rate of deliveries of turbines ready for erection.
-
-        self.output_dict key
-        --------------------
-        possible_cranes : pd.DataFrame
-            Dataframe of cranes possibly available for the operation
-
+        Returns
+        -------
+        tuple[pd.DataFrame, pd.DataFrame]
+            Dataframe of cranes possibly available for the operation, and the number of hours
+            per day where construction can occur.
         operation_time : int
             Integer of number of hours per day construction can proceed.
         """
@@ -702,7 +683,7 @@ class ErectionCost(CostModule):
 
         Returns
         -------
-        pd.DataFrame
+        crane_poly : pd.DataFrame
             A dataframe of the cranes and their lifting polygons.
         """
         crane_poly = pd.concat(self.iterate_crane_lift_polygons(crane_grouped))
@@ -773,11 +754,12 @@ class ErectionCost(CostModule):
         For the maximum wind speed calculations, we use these equations to calculation vmax,
         which is the maximum permissible wind speed:
 
-        vmax = max_TAB * sqrt(1.2 * mh / aw), where
-        mh = hoist load
-        aw = area exposed to wind = surface area * coeff drag
-        1.2 = constant in m^2 / t
-        vmax_tab = maximum load speed per load chart
+        :math:`vmax = max_{TAB} * \sqrt{1.2 * mh / aw}`, where\n
+        :math:`mh` = hoist load\n
+        :math:`aw` = area exposed to wind = surface area * coeff drag\n
+        1.2 = constant in :math:`m^2 / t`\n
+        :math:`vmax_{tab}` = maximum load speed per load chart\n
+        
         (source: pg. 33 of Liebherr)
 
         See the source code for this method on how this calculation is used.
@@ -806,7 +788,7 @@ class ErectionCost(CostModule):
 
         Returns
         -------
-        dict
+        result : dict
             Returns a dict of pd.DataFrame values. The key "component_max_speed" is the
             the dataframe of max component speeds. The key "crane_poly" is a COPY of the
             crane_poly dataframe passed as a parameter to this function and with a column
@@ -934,10 +916,12 @@ class ErectionCost(CostModule):
 
         Returns
         -------
-        Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]
-            Two dataframes: First, utilizing the separate cranes for base and topping.
-            Second, utilizing same crane for base and topping,
-            Third is crew cost.
+        separate_topbase_crane_cost : pd.DataFrame
+            Crane costs for using separate cranes for base and topping.
+        topbase_same_crane_cost : pd.DataFrame
+            Crane costs for using the same crane for base and topping.
+        crew_cost : pd.DataFrame
+            Crew costs.
         """
         join_wind_operation = self.output_dict["join_wind_operation"]
         overtime_multiplier = self.input_dict["overtime_multiplier"]
@@ -1141,17 +1125,15 @@ class ErectionCost(CostModule):
         Finds the minimum cost crane(s) based on the aggregated labor, equipment,
         mobilization and fuel costs for erection.
 
-        self.output_dict keys used as inputs:
-        
-        separate_basetop : pd.DataFrame
-            data frame with aggregated labor, equipment, mobilization, and fuel costs for utilizing
-            separate cranes for base and topping.
-        same_basetop : pd.DataFrame
-            data frame with aggregated labor, equipment, mobilization, and fuel costs for utilizing the
-            same crane for base and topping
-
-        allow_same_flag : boolean
-            flag to indicate whether choosing same base and topping crane is allowed
+        The following the ``output_dict`` are used as inputs:
+            separate_basetop : pd.DataFrame
+                data frame with aggregated labor, equipment, mobilization, and fuel costs for utilizing
+                separate cranes for base and topping.
+            same_basetop : pd.DataFrame
+                data frame with aggregated labor, equipment, mobilization, and fuel costs for utilizing the
+                same crane for base and topping
+            allow_same_flag : boolean
+                flag to indicate whether choosing same base and topping crane is allowed
         """
         allow_same_flag = self.input_dict["allow_same_flag"]
         separate_basetop = self.output_dict["separate_basetop"]
@@ -1210,10 +1192,12 @@ class ErectionCost(CostModule):
 
         Returns
         -------
-        pd.DataFrame, pd.DataFrame, float
-            The first dataframe are management costs by each role on each team.
-            The second dataframe are management costs summed over aggregations of
-            teams. The float is the sum of all the management costs for erection.
+        management_crews : pd.DataFrame
+            Costs by each role and team
+        management_crew_cost_grouped : pd.DataFrame
+            Costs totals by groups of teams.
+        total_management_cost : float
+            Sum of all the management costs for erection.
         """
 
         num_turbines = self.input_dict["num_turbines"]

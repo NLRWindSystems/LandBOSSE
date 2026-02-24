@@ -361,7 +361,7 @@ class ManagementCost:
         Creates a list of dictionaries which can be used on their own or
         used to make a dataframe.
 
-        Must be called after self.run_module()
+        Must be called after :py:meth:`run_module`.
 
         Returns
         -------

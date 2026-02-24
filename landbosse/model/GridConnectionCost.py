@@ -44,10 +44,6 @@ class GridConnectionCost(CostModule):
         """
         Function to calculate total costs for transmission and distribution.
 
-        Parameters
-        ----------
-        <None>
-
         Returns
         -------
         tuple
@@ -100,11 +96,11 @@ class GridConnectionCost(CostModule):
         Creates a list of dictionaries which can be used on their own or
         used to make a dataframe.
 
-        Must be called after self.run_module()
+        Must be called after ``run_module``
 
         Returns
         -------
-        list(dict)
+        list[dict]
             A list of dicts, with each dict representing a row of the data.
         """
         result = []
@@ -134,7 +130,7 @@ class GridConnectionCost(CostModule):
 
         Returns
         -------
-        list
+        list[dict]
             List of dicts, with each dict representing a row for
             the output.
         """
@@ -161,10 +157,6 @@ class GridConnectionCost(CostModule):
     def run_module(self):
         """
         Runs the TransDistCost module and populates the IO dictionaries with calculated values.
-
-        Parameters
-        ----------
-        <None>
 
         Returns
         -------
