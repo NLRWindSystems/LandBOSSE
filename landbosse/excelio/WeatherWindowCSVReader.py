@@ -32,7 +32,11 @@ def read_weather_window(weather_data, local_timezone='America/Denver'):
 
     The .csv should have the first 5 columns of:
 
-    Date, Temp C, Pressure atm, Direction deg, Speed m per s
+    * Date
+    * Temp C
+    * Pressure atm
+    * Direction deg
+    * Speed m per s
 
     Other columns are ignored, headers are ignored and the first
     four lines are skipped. Dates in this file are assumed to be
@@ -45,31 +49,17 @@ def read_weather_window(weather_data, local_timezone='America/Denver'):
 
     The columns returned in the dataframe are:
 
-    'Date UTC': The date and time in UTC of the measurements in that row.
-
-    'Date': The date, localized to the timezone specified in the
-        local_timezone parameter. See parameter list below.
-
-    'Year': An integer of the year of the local time zone date
-
-    'Month': An integer of the month of the local time zone date
-
-    'Day': An integer of the day of the local time zone date
-
-    'Hour': An integer of the hour of the local time zone date
-
-    'Time window': If the integer hour is between 8 and 18 inclusive,
-        this is 'normal'. For hours outside of that range, this is
-        'long'.
-
-    'Season': Season of the year. Months 1, 2, 3 are winter; months 4, 5, 6
-        are spring; months 7, 8, 9 are summer; months 10, 11, 12 are fall.
-
-    'Pressure atm': Air pressure in atm.
-
-    'Direction deg': Wind direction in degrees.
-
-    'Speed m per s': Wind speed in meters per second.
+    * 'Date UTC': The date and time in UTC of the measurements in that row.
+    * 'Date': The date, localized to the timezone specified in the local_timezone parameter. See parameter list below.
+    * 'Year': An integer of the year of the local time zone date
+    * 'Month': An integer of the month of the local time zone date
+    * 'Day': An integer of the day of the local time zone date
+    * 'Hour': An integer of the hour of the local time zone date
+    * 'Time window': If the integer hour is between 8 and 18 inclusive, this is 'normal'. For hours outside of that range, this is 'long'.
+    * 'Season': Season of the year. Months 1, 2, 3 are winter; months 4, 5, 6 are spring; months 7, 8, 9 are summer; months 10, 11, 12 are fall.
+    * 'Pressure atm': Air pressure in atm.
+    * 'Direction deg': Wind direction in degrees.
+    * 'Speed m per s': Wind speed in meters per second.
 
     Parameters
     ----------
