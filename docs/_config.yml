@@ -66,7 +66,6 @@ sphinx:
       #   },
       # ]
     language: 'python'
-    autoyaml_level: 3
     autosummary_generate: true
     autodoc_default_options:
       members: true
