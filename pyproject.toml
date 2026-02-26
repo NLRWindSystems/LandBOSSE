@@ -7,7 +7,7 @@ name = "NREL-landbosse"
 dynamic = ["version"]
 description = "Wind-Plant Integrated System Design & Engineering Model"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 license = { text = "Apache-2.0" }
 keywords = ["wind", "turbine", "mdao", "design", "optimization"]
 authors = [
@@ -33,10 +33,11 @@ classifiers = [ # Optional
   # that you indicate you support Python 3. These classifiers are *not*
   # checked by "pip install". See instead "python_requires" below.
   "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
   "Programming Language :: Python :: 3 :: Only",
   "Programming Language :: C",
   "Programming Language :: Fortran",
@@ -54,7 +55,7 @@ dependencies = ['numpy', 'openpyxl', 'pandas', 'scipy', 'xlsxwriter']
 # projects.
 [project.optional-dependencies] # Optional
 test = ["coveralls", "pytest"]
-docs = ["sphinx", "sphinx_rtd_theme"]
+docs = ["jupyter-book==1.*", "myst-parser", "sphinxcontrib-napoleon"]
 
 # List URLs that are relevant to your project
 #

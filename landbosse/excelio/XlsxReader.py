@@ -62,28 +62,32 @@ class XlsxReader:
         """
         Assuming we have a "Parametric list" sheet/dataframe like the following
 
-        | Project ID | Dataframe name       | Row name | Column name | Start | End | Step
-        |------------|----------------------|----------|-------------|-------|-----|------
-        | project1   | alpha                | fizz     | buzz        | 0     | 12  | 6
-        | project1   | beta                 | foo      | bar         | 0     | 12  | 6
-        | project2   | gamma                | dogs     | cats        | 21    | 27  | 3
+        ===========  ==============  ========  ===========  =====  ===  ====
+        Project ID   Dataframe name  Row name  Column name  Start  End  Step
+        ===========  ==============  ========  ===========  =====  ===  ====
+        project1     alpha           fizz      buzz         0      12   6
+        project1     beta            foo       bar          0      12   6
+        project2     gamma           dogs      cats         21     27   3
+        ===========  ==============  ========  ===========  =====  ===  ====
 
         Translate this data frame into a data frame of the following format:
 
-        | Project ID | Serial      | alpha/fizz/buzz | beta/foo/bar | gamma/dogs/cats
-        |------------|-------------|-----------------|--------------|----------------|
-        | project1   | project1_00 | 0               | 0            | NaN            |
-        | project1   | project1_01 | 0               | 6            | NaN            |
-        | project1   | project1_02 | 0               | 12           | NaN            |
-        | project1   | project1_03 | 6               | 0            | NaN            |
-        | project1   | project1_04 | 6               | 6            | NaN            |
-        | project1   | project1_05 | 6               | 12           | NaN            |
-        | project1   | project1_06 | 12              | 0            | NaN            |
-        | project1   | project1_07 | 12              | 6            | NaN            |
-        | project1   | project1_08 | 12              | 12           | NaN            |
-        | project2   | project2_09 | NaN             | NaN          | 21             |
-        | project2   | project2_10 | NaN             | NaN          | 24             |
-        | project2   | project2_11 | NaN             | NaN          | 27             |
+        ==========  ===========  ===============  ============  ===============
+        Project ID  Serial       alpha/fizz/buzz  beta/foo/bar  gamma/dogs/cats
+        ==========  ===========  ===============  ============  ===============
+        project1    project1_00  0                0             NaN
+        project1    project1_01  0                6             NaN
+        project1    project1_02  0                12            NaN
+        project1    project1_03  6                0             NaN
+        project1    project1_04  6                6             NaN
+        project1    project1_05  6                12            NaN
+        project1    project1_06  12               0             NaN
+        project1    project1_07  12               6             NaN
+        project1    project1_08  12               12            NaN
+        project2    project2_09  NaN              NaN           21
+        project2    project2_10  NaN              NaN           24
+        project2    project2_11  NaN              NaN           27
+        ==========  ===========  ===============  ============  ===============
 
         Here NaN is not an error. It is the normal way Pandas handles
         empty cells It means that, for a particular project,
@@ -170,50 +174,56 @@ class XlsxReader:
         Consider the dataframe we made in create_parametric_value_list.
         Call it parametric_value_list:
 
-        | Project ID | Project ID with serial      | alpha/fizz/buzz | beta/foo/bar | gamma/dogs/cats
-        |------------|-----------------------------|-----------------|--------------|----------------|
-        | project1   | project1_00                 | 0               | 0            | NaN            |
-        | project1   | project1_01                 | 0               | 6            | NaN            |
-        | project1   | project1_02                 | 0               | 12           | NaN            |
-        | project1   | project1_03                 | 6               | 0            | NaN            |
-        | project1   | project1_04                 | 6               | 6            | NaN            |
-        | project1   | project1_05                 | 6               | 12           | NaN            |
-        | project1   | project1_06                 | 12              | 0            | NaN            |
-        | project1   | project1_07                 | 12              | 6            | NaN            |
-        | project1   | project1_08                 | 12              | 12           | NaN            |
-        | project2   | project2_09                 | NaN             | NaN          | 21             |
-        | project2   | project2_10                 | NaN             | NaN          | 24             |
-        | project2   | project2_11                 | NaN             | NaN          | 27             |
+        ==========  ======================  ===============  ============  ===============
+        Project ID  Project ID with serial  alpha/fizz/buzz  beta/foo/bar  gamma/dogs/cats
+        ==========  ======================  ===============  ============  ===============
+        project1    project1_00             0                0             NaN
+        project1    project1_01             0                6             NaN
+        project1    project1_02             0                12            NaN
+        project1    project1_03             6                0             NaN
+        project1    project1_04             6                6             NaN
+        project1    project1_05             6                12            NaN
+        project1    project1_06             12               0             NaN
+        project1    project1_07             12               6             NaN
+        project1    project1_08             12               12            NaN
+        project2    project2_09             NaN              NaN           21
+        project2    project2_10             NaN              NaN           24
+        project2    project2_11             NaN              NaN           27
+        ==========  ======================  ===============  ============  ===============
 
         Now consider that we have the following project list data frame called
         project_list:
 
-        Project ID | Project data file | Total project construction time months | ...
-        -----------|-------------------|----------------------------------------|---
-        project1   | project1_data     | 9                                      | ...
-        project2   | project2_data     | 9                                      | ...
-        project3   | project3_data     | 9                                      | ...
+        ==========  =================  ======================================  ===
+        Project ID  Project data file  Total project construction time months  ...
+        ==========  =================  ======================================  ===
+        project1    project1_data      9                                       ...
+        project2    project2_data      9                                       ...
+        project3    project3_data      9                                       ...
+        ==========  =================  ======================================  ===
 
         OUTER join project_list with parametric_value_list such that you
         get the following data frame. The outer join ensures that even
         projects that do not have parametrics attached to them find
         their way to the list of projects to be executed.
 
-        | Project ID | Project ID with serial      | alpha/fizz/buzz | beta/foo/bar | gamma/dogs/cats  Project data file | ...
-        |------------|-----------------------------|-----------------|--------------|----------------|-------------------| ...
-        | project1   | project1_00                 | 0               | 0            | NaN            | project1_data     | ...
-        | project1   | project1_01                 | 0               | 6            | NaN            | project1_data     | ...
-        | project1   | project1_02                 | 0               | 12           | NaN            | project1_data     | ...
-        | project1   | project1_03                 | 6               | 0            | NaN            | project1_data     | ...
-        | project1   | project1_04                 | 6               | 6            | NaN            | project1_data     | ...
-        | project1   | project1_05                 | 6               | 12           | NaN            | project1_data     | ...
-        | project1   | project1_06                 | 12              | 0            | NaN            | project1_data     | ...
-        | project1   | project1_07                 | 12              | 6            | NaN            | project1_data     | ...
-        | project1   | project1_08                 | 12              | 12           | NaN            | project1_data     | ...
-        | project2   | project2_09                 | NaN             | NaN          | 21             | project2_data     | ...
-        | project2   | project2_10                 | NaN             | NaN          | 24             | project2_data     | ...
-        | project2   | project2_11                 | NaN             | NaN          | 27             | project2_data     | ...
-        | project3   | NaN                         | NaN             | NaN          | NaN            | project3_data     | ...
+        ==========  ======================  ===============  ============  ===============  =================
+        Project ID  Project ID with serial  alpha/fizz/buzz  beta/foo/bar  gamma/dogs/cats  Project data file
+        ==========  ======================  ===============  ============  ===============  =================
+        project1    project1_00             0                0             NaN              project1_data
+        project1    project1_01             0                6             NaN              project1_data
+        project1    project1_02             0                12            NaN              project1_data
+        project1    project1_03             6                0             NaN              project1_data
+        project1    project1_04             6                6             NaN              project1_data
+        project1    project1_05             6                12            NaN              project1_data
+        project1    project1_06             12               0             NaN              project1_data
+        project1    project1_07             12               6             NaN              project1_data
+        project1    project1_08             12               12            NaN              project1_data
+        project2    project2_09             NaN              NaN           21               project2_data
+        project2    project2_10             NaN              NaN           24               project2_data
+        project2    project2_11             NaN              NaN           27               project2_data
+        project3    NaN                     NaN              NaN           NaN              project3_data
+        ==========  ======================  ===============  ============  ===============  =================
 
         This data frame is in place to run with a modified project manager
         runner. The modification to the runner will run modifications to the

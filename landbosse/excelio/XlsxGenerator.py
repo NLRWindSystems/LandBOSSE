@@ -169,7 +169,13 @@ class XlsxGenerator:
         This writes a detailed outputs tab. It takes a list of dictionaries
         as the parameters and in each of those dictionaries it looks at the keys:
 
-        ['project_id', 'module', 'type', 'variable_df_key_col_name', 'unit', 'numeric value', 'non_numeric_value']
+        * 'project_id'
+        * 'module'
+        * 'type'
+        * 'variable_df_key_col_name'
+        * 'unit'
+        * 'numeric value'
+        * 'non_numeric_value'
 
         The values of each of those keys become each cell in the row.
 

@@ -5,12 +5,8 @@ import math
 
 class DevelopmentCost(CostModule):
     """
-    **DevelopmentCost.py
-
-    -Created by Parangat Bhaskar on June 30, 2019
-
-    Creating a simple DevelopmentCost module for now. This module reads in a user input from the detailed input Excel
-    file and outputs this in the detailed output excel file.
+    Reads in a user input from the detailed input Excel file, and passes it through to
+    the detailed output Excel file.
 
     """
 
@@ -31,7 +27,7 @@ class DevelopmentCost(CostModule):
         cost is retrieved from the project data.
 
         Returns
-        ------------------------------------
+        -------
         total_development_cost : pd.DataFrame
             data frame with total development cost by type of cost (e.g., Labor)
         """
@@ -56,11 +52,11 @@ class DevelopmentCost(CostModule):
         Creates a list of dictionaries which can be used on their own or
         used to make a dataframe.
 
-        Must be called after self.run_module()
+        Must be called after :py:meth:`run_module`.
 
         Returns
         -------
-        list(dict)
+        list[dict]
             A list of dicts, with each dict representing a row of the data.
         """
 
@@ -86,7 +82,6 @@ class DevelopmentCost(CostModule):
     def run_module(self):
         """
         Runs the DevelopmentCost module and populates the IO dictionaries with calculated values.
-
         """
 
         try:

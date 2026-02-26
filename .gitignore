@@ -149,3 +149,7 @@ landbosse/tests/*.csv
 # repository directoy, ignore them.
 outputs/
 inputs/
+
+# Docs build
+_autosummary
+_build
