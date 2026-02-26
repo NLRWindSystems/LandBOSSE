@@ -8,126 +8,67 @@ import pandas as pd
 
 class SitePreparationCost(CostModule):
     """
-    **SitePreparationCost.py**
-
-    - Created by Annika Eberle and Owen Roberts on Apr. 3, 2018
-
-    - Refactored by Parangat Bhaskar and Alicia Key on Jun 3, 2019
-
-
-
-    **Calculates cost of constructing roads for land-based wind projects:**
+    Calculates cost of constructing roads for land-based wind projects:
 
     - Get terrain complexity
-
     - Get turbine spacing
-
     - Get road width
-
     - Get number of turbines
-
     - Get turbine rating
-
     - Get duration of construction*  #todo: add to process diagram
-
     - Get road length
-
     - Get weather data
-
     - Get road thickness
-
     - Calculate volume of road based on road thickness, road width, and road length
-
     - Calculate road labor and equipment costs by operation and type using RSMeans data
-
     - Calculate man hours and equipment hours for compaction of soil based on road length, road thickness, soil type, road width, and equipment size
-
     - Calculate man hours and equipment hours for mass material movement based on land cover, terrain complexity, and road length
-
     - Calculate man hours and equipment hours for rock placement based on equipment size, distance to quarry, and volume of road
-
     - Calculate man hours and equipment hours for compaction of rock based on road length, road thickness, and rock type
-
     - Calculate man hours and equipment hours for final grading based on road length
-
     - Calculate quantity of materials based on volume of materials
-
     - Calculate material costs by type
-
     - Calculate material costs using quantity of materials by material type and material prices by material type
-
     - Sum road costs over all operations and material types to get total costs by type of cost (e.g., material vs. equipment)
-
     - Return total road costs by type of cost
 
+    Keys in the input dictionary are the following:
 
-    **Keys in the input dictionary are the following:**
+    - ``road_length``
+    - ``road_width``
+    - ``road_thickness``
+    - ``crane_width``
+    - ``num_access_roads``
+    - ``num_turbines``
+    - ``rsmeans`` (dataframe)
+    - ``duration_construction``
+    - ``wind_delays``
+    - ``wind_delay_time``
+    - ``material_price``
+    - ``rsmeans_per_diem``
+    - ``rotor_diameter_m``
+    - ``turbine_spacing_rotor_diameters``
 
-    - road_length
+    Keys in the output dictionary are the following:
 
-    - road_width
+    - ``road_length_m``
+    - ``road_volume_m3``
+    - ``depth_to_subgrade_m``
+    - ``crane_path_widthm``
+    - ``road_thickess_m``
+    - ``road_width_m``
+    - ``road_width_m``
+    - ``material_volume_cubic_yards``
+    - ``road_construction_time``
+    - ``topsoil_volume``
+    - ``embankment_volume_crane``
+    - ``embankment_volume_road``
+    - ``rough_grading_area``
+    - ``material_needs``
+    - ``operation_data``
+    - ``total_road_cost``
 
-    - road_thickness
-
-    - crane_width
-
-    - num_access_roads  #TODO: Add to excel inputs sheet
-
-    - num_turbines
-
-    - rsmeans (dataframe)
-
-    - duration_construction
-
-    - wind_delays
-
-    - wind_delay_time
-
-    - material_price (dataframe)
-
-    - rsmeans_per_diem
-
-    - rotor_diameter_m
-
-    - turbine_spacing_rotor_diameters
-
-
-    **Keys in the output dictionary are the following:**
-
-    - road_length_m
-
-    - road_volume_m3
-
-    - depth_to_subgrade_m
-
-    - crane_path_widthm
-
-    - road_thickess_m
-
-    - road_width_m
-
-    - road_width_m
-
-    - material_volume_cubic_yards
-
-    - road_construction_time
-
-    - topsoil_volume
-
-    - embankment_volume_crane
-
-    - embankment_volume_road
-
-    - rough_grading_area
-
-    - material_needs (dataframe)
-
-    - operation_data (dataframe)
-
-    - total_road_cost
-
-
-
+    Created by Annika Eberle and Owen Roberts on Apr. 3, 2018 and refactored by Parangat Bhaskar and Alicia Key on Jun 3, 2019
     """
 
     def __init__(self, input_dict, output_dict, project_name):
@@ -174,40 +115,27 @@ class SitePreparationCost(CostModule):
 
         Parameters
         ----------
-
-        int num_turbines
+        num_turbines : int
             number of turbines in wind farm
-
-        unitless turbine_spacing_rotor_diameters
+        turbine_spacing_rotor_diameters : float
             Immediate spacing between two turbines as a function of rotor diameter
-
-        int rotor_diameter_m
+        rotor_diameter_m : int
             Rotor diameter
-
-        float crane_width
+        crane_width : float
             Crane width in meters
-
-        float road_thickness
+        road_thickness : float
             Road thickness in inches
-
-        float road_width_ft
+        road_width_ft : float
             Road width in feet
-
-
 
         Returns
         ----------
-
-        road_length_m
+        road_length_m : float
             Calculated road length (in m)
-
-        road_volume_m3
+        road_volume_m3 : float
             Calculated road volume (in m^3)
-
-        material_volume_cubic_yards
+        material_volume_cubic_yards : float
             Material volume required (in cubic yards) based on road volume
-
-
         """
 
         if road_properties_input["road_distributed_wind"] == True or road_properties_input["turbine_rating_MW"] < 0.1:
@@ -254,33 +182,24 @@ class SitePreparationCost(CostModule):
 
         Parameters
         ----------
-        float crane_path_width_m
+        crane_path_width_m : float
             Width of crane path (in m)
-
-        float road_length_m
+        road_length_m : float
             Road length (in m)
-
-        float depth_to_subgrade_m
+        depth_to_subgrade_m : float
             Depth to subgarde (in m)
-
-        float road_volume
+        road_volume : float
             Road volume (in m^3)
-
-        float road_thickness_m
+        road_thickness_m : float
             Road thickness (in m)
-
-
 
         Returns
         ----------
-
-        pd.DataFrame operation_data
+        operation_data : pd.DataFrame
             Dataframe which conatains following outputs:
 
-            -  Number of days required for construction
-
+            - Number of days required for construction
             - Number of crews required to complete roads construction in specified construction time
-
             - Cost of labor and equipment rental prior to weather delays
 
         """
@@ -481,27 +400,24 @@ class SitePreparationCost(CostModule):
 
         Parameters
         ----------
-        pd.Dataframe RSMeans
-            Dataframe containing labor and equipment rental costs
-
-        pd.DataFrame operation_data
-            DataFrame containing estimates for total roads construction time and cost
+        calculate_cost_input_dict: dict
+            Dictionary with the following:
+        
+            rsmeans : pd.Dataframe
+                Dataframe containing labor and equipment rental costs
+            operation_data : pd.DataFrame
+                DataFrame containing estimates for total roads construction time and cost
 
 
         Returns
         ----------
-
-        pd.DataFrame total_road_cost
+        total_road_cost : pd.DataFrame
             Dataframe containing following calculated outputs (after weather delay considerations):
 
             - Total labor cost
-
-            - Totoal material cost
-
+            - Total material cost
             - Total equipment rental cost
-
             - Total mobilization cost
-
             - Any other related costs
 
 
@@ -760,10 +676,9 @@ class SitePreparationCost(CostModule):
         Creates a list of dictionaries which can be used on their own or
         used to make a dataframe.
 
-
         Returns
         -------
-        list(dict)
+        list[dict]
             A list of dicts, with each dict representing a row of the data.
         """
         result = []
@@ -929,8 +844,7 @@ class SitePreparationCost(CostModule):
 
     def run_module(self):
         """
-        Runs the SitePreparation module and populates the IO dictionaries with calculated values.
-
+        Runs the module and populates the IO dictionaries with calculated values.
         """
         try:
             self.calculate_road_properties(self.input_dict, self.output_dict)

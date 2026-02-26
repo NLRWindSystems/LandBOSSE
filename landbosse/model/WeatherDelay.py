@@ -15,35 +15,30 @@ class WeatherDelay:
     or the number of hours at the start of the weather window--during which the
     work will not start.
 
-    The INPUT keys are the following:
+    The ``input_dict`` keys are the following:
 
-    weather_window
-        (pd.DataFrame) The weather window as prepared by the
+    weather_window : pd.DataFrame
+        The weather window as prepared by the
         read_weather_window function in the WeatherWindowCSVReader module.
         See the documentation for that function for details on the
         columns of the weather window.
-
-    start_delay_hours
-        (float) Delay of mission from start of weather window. The weather
+    start_delay_hours : float
+        Delay of mission from start of weather window. The weather
         window is a list of hours with the weather values as rows. The delay
         can be as little as 0 hours or the total available construction hours
         for the project.
-
-    mission_time_hours
-        (float) Length of mission. Mission length is the time it takes to
+    mission_time_hours : float
+        Length of mission. Mission length is the time it takes to
         complete the operation that may be delayed by the weather.
+    critical_wind_speed_m_per_s : float
+        Wind speed that the mission must shutdown and enter a delay state.
+    wind_height_of_interest_m : float
+        Height used in wind shear calculations.
 
-    critical_wind_speed_m_per_s
-        (float) Wind speed that the mission must shutdown and enter a delay state.
+    The ``output_dict`` keys are the following
 
-
-    wind_height_of_interest_m
-        (float) Height used in wind shear calculations.
-
-    The OUTPUT keys are the following
-
-    wind_delay
-        (list) List of number of hours of each wind delay during the mission.
+    wind_delay : list
+        List of number of hours of each wind delay during the mission.
         length of list is number of weather delays. Value in list is duration
         of weather delay in hours.
 
@@ -67,12 +62,6 @@ class WeatherDelay:
         This method checks a dictionary to make sure it has keys for all
         necessary values needed for calculations in an instance of this
         class. It is made to validate input_dict dictionaries.
-
-        Returns
-        -------
-        None
-            This method returns nothing if the validation passes. If it does
-            not pass an exception is raised.
 
         Raises
         ------

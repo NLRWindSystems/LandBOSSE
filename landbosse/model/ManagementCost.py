@@ -6,76 +6,6 @@ class ManagementCost:
     This class models management costs of a wind plant. Its inputs are
     configured with a dictionary with the key value pairs being the
     inputs into the model.
-
-    See the input_output documentation below for a description of the key
-    names for this inputs values dictionary.
-
-    The INPUT keys are the following:
-
-    project_value_usd
-        (float) Sum of all other BOS costs (e.g., roads, foundations, erection)
-
-    foundation_cost_usd
-        (float) Foundation costs for the project
-
-    construct_duration
-        (float) Project duration (in months)
-
-    num_hwy_permits
-        (int) Number of highway permits needed for the project
-
-    markup_constants
-        (dict) Markup and contingency costs that can be set by user
-        (see the markup_contingency method for key names to use in this dictionary)
-
-    num_turbines
-        (int) Number of turbines for project
-
-    project_size_megawatts
-        (float) Total power output of project in megawatts
-
-    hub_height_meters
-        (float) Hub height for all turbines in meters
-
-    project_size_megawatts
-
-        (float) Total power output of project in megawatts
-
-    num_access_roads
-        (int) Number of access roads into project site
-
-    site_facility_building_area_df
-        (pd.DataFrame) Building areas dataframe. This should be loaded
-        from a .csv file on the filesystem.
-
-    The OUTPUT keys are the following
-
-    insurance
-        (float) The cost of insurance for the project. USD. Eqn. 3.4.1
-
-    construction_permitting
-        (float) The cost of the construction permitting. USD.
-
-    project_management
-        (float) The cost of the project management. USD.
-
-    bonding
-        (float) The cost of binding for the project. USD.
-
-    engineering_usd
-        (float) Site-specific engineering costs for foundations and collection. USD.
-
-    site_security_usd
-        (float) estimate cost of site security. USD.
-
-    site_facility
-        (float) Site facility costs. USD.
-
-    markup_contingency
-        (float) Markup contingency costs. USD.
-
-    total_cost
-        (float) Total cost of everything else
     """
 
     def __init__(self, input_dict, output_dict, project_name):
@@ -87,10 +17,54 @@ class ManagementCost:
         Parameters
         ----------
         input_dict : dict
-            Dictionary with the inputs key / value pairs
+            Dictionary with the inputs key / value pairs:
+
+                project_value_usd
+                    (float) Sum of all other BOS costs (e.g., roads, foundations, erection)
+                foundation_cost_usd
+                    (float) Foundation costs for the project
+                construct_duration
+                    (float) Project duration (in months)
+                num_hwy_permits
+                    (int) Number of highway permits needed for the project
+                markup_constants
+                    (dict) Markup and contingency costs that can be set by user
+                    (see the markup_contingency method for key names to use in this dictionary)
+                num_turbines
+                    (int) Number of turbines for project
+                project_size_megawatts
+                    (float) Total power output of project in megawatts
+                hub_height_meters
+                    (float) Hub height for all turbines in meters
+                project_size_megawatts
+                    (float) Total power output of project in megawatts
+                num_access_roads
+                    (int) Number of access roads into project site
+                site_facility_building_area_df
+                    (pd.DataFrame) Building areas dataframe. This should be loaded
+                    from a .csv file on the filesystem.
 
         output_dict : dict
-            Dictionary with output key / value pairs.
+            Dictionary with output key / value pairs:
+
+                insurance
+                    (float) The cost of insurance for the project. USD. Eqn. 3.4.1
+                construction_permitting
+                    (float) The cost of the construction permitting. USD.
+                project_management
+                    (float) The cost of the project management. USD.
+                bonding
+                    (float) The cost of binding for the project. USD.
+                engineering_usd
+                    (float) Site-specific engineering costs for foundations and collection. USD.
+                site_security_usd
+                    (float) estimate cost of site security. USD.
+                site_facility
+                    (float) Site facility costs. USD.
+                markup_contingency
+                    (float) Markup contingency costs. USD.
+                total_cost
+                    (float) Total cost of everything else
         """
         self.in_distributed_mode = 'override_total_management_cost' in input_dict
         self.validate_inputs(input_dict)
@@ -145,16 +119,13 @@ class ManagementCost:
         Eqn. 3.4.1
 
         Includes:
-
-        Builder's risk
-
-        General liability
-
-        Umbrella policy
-
-        Professional liability
-
-        It uses only the self.project_value attribute in calculations.
+        
+        * Builder's risk
+        * General liability
+        * Umbrella policy
+        * Professional liability
+        
+        It uses only the ``project_value`` attribute in calculations.
 
         :math:`C_I = 0.0056 * V_p`
 
@@ -199,27 +170,17 @@ class ManagementCost:
         Calculate project management costs based on project size; equation based on empirical data from industry.
         Includes:
 
-        Project manager and assistant project manager for site
-
-        Site managers for civil, electrical, and erection
-
-        QA/QC management
-
-        QA/QC inspections for civil, structural, electrical, and mechanical
-
-        Administrative support for the site
-
-        Health and safety supervisors
-
-        Environmental supervisors
-
-        Office equipment & materials
-
-        Site radios, communication, and vehicles
-
-        Management team per diem and travel
-
-        Legal and public relations
+        * Project manager and assistant project manager for site
+        * Site managers for civil, electrical, and erection
+        * QA/QC management
+        * QA/QC inspections for civil, structural, electrical, and mechanical
+        * Administrative support for the site
+        * Health and safety supervisors
+        * Environmental supervisors
+        * Office equipment & materials
+        * Site radios, communication, and vehicles
+        * Management team per diem and travel
+        * Legal and public relations
 
         Returns
         -------
@@ -239,15 +200,11 @@ class ManagementCost:
         """
         Calculate mark-up and contingency costs based on project value. Includes:
 
-        Markup contingency
-
-        Markup warranty management
-
-        Sales and use tax
-
-        Markup overhead
-
-        Markup profit margin
+        * Markup contingency
+        * Markup warranty management
+        * Sales and use tax
+        * Markup overhead
+        * Markup profit margin
 
         Returns
         -------
@@ -311,53 +268,39 @@ class ManagementCost:
         Uses empirical data to estimate cost of site facilities and security, including
 
 
-        Site facilities:
+        * Site facilities:
 
-        Building design and construction
+          * Building design and construction
+          * Drilling and installing a water well, including piping
+          * Electric power for a water well
+          * Septic tank and drain field
 
-        Drilling and installing a water well, including piping
+        * Site security:
 
-        Electric power for a water well
-
-        Septic tank and drain field
-
-
-        Site security:
-
-        Constructing and reinstating the compound
-
-        Constructing and reinstating the batch plant site
-
-        Setting up and removing the site offices for the contractor, turbine supplier, and owner
-
-        Restroom facilities
-
-        Electrical and telephone hook-up
-
-        Monthly office costs
-
-        Signage for project information, safety and directions
-
-        Cattle guards and gates
-
-        Number of access roads
+          * Constructing and reinstating the compound
+          * Constructing and reinstating the batch plant site
+          * Setting up and removing the site offices for the contractor, turbine supplier, and owner
+          * Restroom facilities
+          * Electrical and telephone hook-up
+          * Monthly office costs
+          * Signage for project information, safety and directions
+          * Cattle guards and gates
+          * Number of access roads
 
 
 
         In main.py, a csv is loaded into a Pandas dataframe. The columns of the
         dataframe must be:
 
-        Size Min (MW)
-            Minimum power output for a plant that needs a certain size of
-            building.
-
-        Size Max (MW)
-            Maximum power output of a plant that need a certain size of
-            building.
-
-        Building Area (sq. ft.)
-            The area of the building needed to provide O & M support to plants
-            with power output between "Size Min (MW)" and "Size Max (MW)".
+            Size Min (MW)
+                Minimum power output for a plant that needs a certain size of
+                building.
+            Size Max (MW)
+                Maximum power output of a plant that need a certain size of
+                building.
+            Building Area (sq. ft.)
+                The area of the building needed to provide O & M support to plants
+                with power output between "Size Min (MW)" and "Size Max (MW)".
 
         Returns
         -------
@@ -418,7 +361,7 @@ class ManagementCost:
         Creates a list of dictionaries which can be used on their own or
         used to make a dataframe.
 
-        Must be called after self.run_module()
+        Must be called after :py:meth:`run_module`.
 
         Returns
         -------

@@ -7,26 +7,21 @@ import numpy as np
 
 class TransportCost(CostModule):
     """
-    **TransportCost.py**
-
     Calculates the costs associated with transportation for land-based wind projects *(module is currently based on curve fit of empirical data)*
 
-    Get number of blades, nacelles
+    Gets the number of blades, nacelles, and returns total trasnport costs.
 
-    Return total trasnport costs
+    Keys in the input dictionary are the following:
 
-    \n\n**Keys in the input dictionary are the following:**
+        rotor_diameter_m : float
+            Determines the approximate blade length [in m]
+        number_turbines : int
+            Number of turbines
 
-    rotor_diameter_m
-        (float) Determines the approximate blade length [in m]
+    Keys in the output dictionary are the following:
 
-    number_turbines
-        (int) Number of turbines
-
-    \n\n**Keys in the output dictionary are the following:**
-
-    transport_cost
-        (float) cost of transportation [in USD]
+        transport_cost : float
+            Cost of transportation [in USD]
 
 
     """
@@ -53,18 +48,15 @@ class TransportCost(CostModule):
 
         Parameters
         -------
-        interconnect_voltage_kV
-            (in kV)
+        interconnect_voltage_kV : float
+            Interconnection voltage, in kV.
+        project_size_megawatts : float
+            Project capacity, in MW.
 
-        project_size_megawatts
-            (in MW)
-
-
-        Returns:
+        Returns
         -------
-        substation_cost
-            (in USD)
-
+        substation_cost : float
+            Total cost, in USD.
         """
 
         blade_length = 0.5 * calculate_costs_input_dict["rotor_diameter_m"]
@@ -98,11 +90,11 @@ class TransportCost(CostModule):
         Creates a list of dictionaries which can be used on their own or
         used to make a dataframe.
 
-        Must be called after self.run_module()
+        Must be called after :py:meth:`run_module`.
 
         Returns
         -------
-        list(dict)
+        list[dict]
             A list of dicts, with each dict representing a row of the data.
         """
         result = []
@@ -130,10 +122,6 @@ class TransportCost(CostModule):
     def run_module(self):
         """
         Runs the TransportCost module and populates the IO dictionaries with calculated values.
-
-         Parameters
-        ----------
-        <None>
 
         Returns
         -------

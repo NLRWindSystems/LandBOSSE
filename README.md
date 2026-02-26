@@ -1,5 +1,10 @@
 # LandBOSSE
 
+[![PyPI version](https://badge.fury.io/py/NREL-landbosse.svg)](https://badge.fury.io/py/NREL-landbosse)
+[![Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![image](https://img.shields.io/pypi/pyversions/NREL-landbosse.svg)](https://pypi.python.org/pypi/NREL-landbosse)
+[![Jupyter Book](https://jupyterbook.org/badge.svg)](https://nlrwindsystems.github.io/NREL-landbosse)
+
 ## Welcome to LandBOSSE!
 
 The Land-based Balance-of-System Systems Engineering (LandBOSSE) model is a systems engineering tool that estimates the balance-of-system (BOS) costs associated with installing utility scale wind plants (10, 1.5 MW turbines or larger). It can execute on macOS and Windows. At this time, for both platforms, it is a command line tool that needs to be accessed from the command line.
@@ -11,34 +16,82 @@ Eberle, Annika, Owen Roberts, Alicia Key, Parangat Bhaskar, and Katherine Dykes.
 National Renewable Energy Laboratory. NREL/TP-6A20-72201.
 https://www.nrel.gov/docs/fy19osti/72201.pdf.
 
-## User Guides
+## Installation
 
-First, read the technical report to understand the big picture of LandBOSSE. In the technical report, you will find process diagrams, equations and the modules that implement them. Then, come back to this documentation and read the user guide.
+For any installation, users should use a virtual environment. We recommend Miniconda or Anaconda,
+but any supporting PyPI or source installations are possible. Here, we'll work with conda for
+compatibility with other NREL tools.
 
-In brief, LandBOSSE takes `.xlsx` spreadsheets, reads input data from tabs on the spreadsheets, and writes the results to an output `.xlsx` file. There are three sections in the user guide to demonstrate how to perform these steps.
+In the below, you can replace the name "landbosse" with any name you choose, and the Python version
+can be any that you prefer as long as it's supported by LandBOSSE.
 
-The user guide comes in three parts:
+```bash
+conda create -n landbosse python=3.13 -y
+```
 
-1. Software installation,
-
-2. Input data configuration, and
-
-3. Output data analysis.
-
-### Software Installation
+### PyPI
 
 ```bash
 pip install NREL-landbosse
 ```
 
-There are two options depending on whether you are a developer or an end user and what operating system you are running.
+### Source
 
-- **Windows end-user**: If you run the Microsoft Windows operating system and aren't setting up as a developer who is going to be modifying the core library, these instructions are for you. [Find out how to configure Windows for end users.](installation_instructions/windows_end_user.md)
+1. Navigate to your preferred installation location
+2. Clone the repo (or fork and clone your fork, if preferred).
 
-- **macOS end user** and **macOS developer**: If you run the macOS operating system, either as an end-user or as a developer, these instructions are for you. Both developers and end-users will need most of the steps. [Find out how to configure macOS for end users and developers.](installation_instructions/macos_developer.md)
+    ```bash
+    git clone https://github.com/NLRWindSystems/LandBOSSE.git
+    ```
 
-### Operation after the installation
+3. Enter the directory and install the local version
 
-Review the installation instructions on how to activate a virtual environment, if you haven't already.
+    ```bash
+    cd LandBOSSE
+    pip install .
+    ```
 
-Then, read the [Operation and Folder Structure](installation_instructions/operation_and_folder_structure.md) for details on running the command that executes LandBOSSE from the command line.
+    Optional: `pip install -e .` for editable installations if you plan to modify the code itself.
+
+## User Guides
+
+### First time running teh model
+
+At its most basic, the following setup is required, though the provided input data in `project_inpute_template`
+can be used to test out the model and view results before diving into configuring custom scenarios.
+
+1. Create an "input" and "output" folder for LandBOSSE to access. If you are using a source
+   installation, then ensure the folders are not located inside the local copy of the repository.
+2. Create a `project_list.xlsx` like `LandBOSSE/project_list.xlsx` and a subfolder called
+   `project_data` inside of `inputs`.
+3. Each project in `project_list.xlsx` should have a corresponding Excel file in `project_data`
+   similar to the examples in `LandBOSSE/project_input_template/project_data`.
+
+
+### Running the model 
+
+Once the initial steps (above) are followed, we can run the model:
+
+1. Activate your virtual environment: `conda activate landbosse
+2. Navigate to the top-level `LandBOSSE` folder
+3. Run the model: `python main.py -i input-folder-path -o output-folder-path` (be sure to replace
+   "input-folder-path" and "output-folder-path" with your respective input and output folders).
+
+All together
+
+```bash
+conda activate landbosse
+cd /path/to/LandBOSSE
+python main.py -i /path/to/inputs -o /path/to/outputs
+conda deactivate
+```
+
+4. View your results in the output folder.
+
+
+### Integrating LandBOSSE into your code
+
+While LandBOSSE was originally designed as a CLI tool powered by Excel workbooks, an API also exists
+to run the model within another application.
+
+Further documentation coming soon

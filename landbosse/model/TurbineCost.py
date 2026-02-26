@@ -6,18 +6,12 @@ import pandas as pd
 
 class TurbineCost(CostModule):
     """
-    **TurbineCost.py**
-
-    Calculates the CapEx cost of the turbine itself
-
-    This is a simple feedthrough calculation that requires an input CapEx assumption ($/kW)
-
-    The structure of this class contains many superfluous elements, but it has been made to match
-    the other LandBOSSE cost modules
+    Calculates the CapEx cost of the turbine itself. This is a simple feedthrough calculation
+    that requires an input CapEx assumption ($/kW). The structure of this class contains many
+    superfluous elements, but it has been made to match the other LandBOSSE cost modules.
 
     turbine_capex
         (float) CapEx cost of turbine ($/kW)
-
     number_turbines
         (int) Number of turbines
     """
@@ -44,11 +38,10 @@ class TurbineCost(CostModule):
 
         Parameters
         -------
-        turbine_capex
-            (in $/kW, default $1500/kW)
-
-        number_turbines
-            (unitless)
+        turbine_capex: float
+            Turbe cost per nameplate capacity, in $/kW, default $1500/kW
+        number_turbine: int
+            Number of turbines.
 
         Returns:
         -------
@@ -79,7 +72,7 @@ class TurbineCost(CostModule):
         Creates a list of dictionaries which can be used on their own or
         used to make a dataframe.
 
-        Must be called after self.run_module()
+        Must be called after :py:meth:`run_module`.
 
         Returns
         -------
@@ -106,10 +99,6 @@ class TurbineCost(CostModule):
     def run_module(self):
         """
         Runs the TurbineCost module and populates the IO dictionaries with calculated values.
-
-         Parameters
-        ----------
-        <None>
 
         Returns
         -------

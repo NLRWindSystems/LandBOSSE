@@ -1,15 +1,7 @@
 """
-**CollectionCost.py**
-- Created by Matt Shields for Offshore BOS
-- Refactored by Parangat Bhaskar for LandBOSSE
-
-NREL - 05/31/2019
-
-This module consists of two classes:
-
-- The first class in this module is the parent class Cable, with a sublass Array that inherits from Cable
-
-- The second class is the ArraySystem class that instantiates the Array class and determines the wind farm layout and calculates total collection system cost
+Originally created for ORBIT and refactored for LandBOSSE. This module consists of two cable
+classes: ``Cable`` and a subclass, ``Array``. These are combined to create the ``ArraySystem`` that
+determines the wind farm layout and calculates total collection system cost.
 """
 
 import math
@@ -27,33 +19,33 @@ class Cable:
 
     Create an instance of Cable (either array or export)
 
-        Parameters
-        ---------
-        cable_specs : dict
-            Dictionary containing cable specifications
-        line_frequency_hz : int
-            Additional user inputs
+    Parameters
+    ---------
+    cable_specs : dict
+        Dictionary containing cable specifications
+    line_frequency_hz : int
+        Additional user inputs
 
-        Returns
-        -------
-        current_capacity : float
-            Cable current rating at 1m burial depth, Amps
-        rated_voltage : float
-            Cable rated voltage, kV
-        ac_resistance : float
-            Cable resistance for AC current, Ohms/km
-        inductance : float
-            Cable inductance, mH/km
-        capacitance : float
-            Cable capacitance, nF/km
-        cost : int
-            Cable cost, $US/km
-        char_impedance : float
-            Characteristic impedance of equivalent cable circuit, Ohms
-        power_factor : float
-            Power factor of AC current in cable (nondim)
-        cable_power : float
-            Maximum 3-phase power dissipated in cable, MW
+    Returns
+    -------
+    current_capacity : float
+        Cable current rating at 1m burial depth, Amps
+    rated_voltage : float
+        Cable rated voltage, kV
+    ac_resistance : float
+        Cable resistance for AC current, Ohms/km
+    inductance : float
+        Cable inductance, mH/km
+    capacitance : float
+        Cable capacitance, nF/km
+    cost : int
+        Cable cost, $US/km
+    char_impedance : float
+        Characteristic impedance of equivalent cable circuit, Ohms
+    power_factor : float
+        Power factor of AC current in cable (nondim)
+    cable_power : float
+        Maximum 3-phase power dissipated in cable, MW
 
     """
 
@@ -130,16 +122,12 @@ class Array(Cable):
             Dictionary containing following cable specifications:
 
             - turbine_rating_MW
-
             - upstream_turb
-
             - turbine_spacing_rotor_diameters
-
             - rotor_diameter_m
-
+        
         addl_inputs : dict
-
-            - Any additional user inputs
+            Any additional user inputs.
 
         Returns
         -------
@@ -243,32 +231,14 @@ class Array(Cable):
 
 class ArraySystem(CostModule):
     """
+    Performs the following calculations:
 
-
-    \nThis module:
-
-    * Calculates cable length to substation
-
-    * Calculates number of strings in a subarray
-
-    * Calculated number of strings
-
-    * Calculates total cable length for each cable type
-
-    * Calculates total trench length
-
-    * Calculates total collection system cost based on amount of material, amount of labor, price data, cable length, and trench length.
-
-
-
-    **Keys in the input dictionary are the following:**
-
-    * Given below are attributes that define each cable type:
-        * conductor_size
-            (int)   cross-sectional diameter of cable [in mm]
-
-
-
+      * Calculates cable length to substation
+      * Calculates number of strings in a subarray
+      * Calculated number of strings
+      * Calculates total cable length for each cable type
+      * Calculates total trench length
+      * Calculates total collection system cost based on amount of material, amount of labor, price data, cable length, and trench length.
     """
 
     def __init__(self, input_dict, output_dict, project_name):
@@ -286,8 +256,7 @@ class ArraySystem(CostModule):
 
     def calc_num_strings(self):
         """
-        Calculate number of full and partial strings to support full plant
-        capacity.
+        Calculate number of full and partial strings to support full plant capacity.
 
         Parameters
         ----------
@@ -300,18 +269,18 @@ class ArraySystem(CostModule):
 
         Returns
         -------
-        self.output_dict['total_turb_per_string'] : float
+        total_turb_per_string : float
             Number of turbines on each string
-        self.output_dict['num_full_strings'] : float
+        num_full_strings : float
             Number of complete strings in array
         turb_per_partial_string : float
             Number of turbines in the partial string (if applicable)
-        self.output_dict['num_partial_strings'] : float
+        num_partial_strings : float
             Number of partial strings (if applicable, 0 or 1)
         perc_full_string : list
             Percentage of maximum number of turbines per cable type on
             partial string
-        self.output_dict['num_turb_per_cable'] : list
+        num_turb_per_cable : list
             Number of turbines on each cable type in string
         """
 
@@ -366,9 +335,9 @@ class ArraySystem(CostModule):
 
         Parameters
         ----------
-        self.output_dict['num_leftover_turb'] : float
+        num_leftover_turb : float
             Number of turbines in partial string
-        self.output_dict['num_turb_per_cable'] : list
+        num_turb_per_cable : list
             List of number of turbines per cable type on a full string
 
         Returns
@@ -495,14 +464,14 @@ class ArraySystem(CostModule):
             Instance of individual cable type
         cable_specs : dict
             Dictionary containing cable specifications
-        self.output_dict['num_full_strings'] : float
+        num_full_strings : float
             Number of complete strings in array
-        self.output_dict['num_partial_strings'] : float
+        num_partial_strings : float
             Number of partial strings (if applicable, 0 or 1)
         len_to_substation : int or float
             Total length of largest array cable required to connect each string
             to substation, km
-        self.output_dict['perc_partial_string'] : list
+        perc_partial_string : list
             List of percent of turbines per cable type on partial string
             relative to full string
 
@@ -716,20 +685,14 @@ class ArraySystem(CostModule):
 
         Parameters
         -------
-        duration_construction
-
-        pd.DataFrame
-            rsmeans
-
-        pd.DataFrame
-            trench_length_km
-
-
+        duration_construction : float
+        rsmeans : pd.DataFrame
+        trench_length_km : pd.DataFrame
+        turbine_rating_MW : float
 
         Returns
         -------
-
-        (pd.DataFrame) operation_data
+        operation_data : pd.DataFrame
 
         """
 
@@ -996,7 +959,7 @@ class ArraySystem(CostModule):
 
         Returns
         -------
-        list(dict)
+        list[dict]
             A list of dicts, with each dict representing a row of the data.
         """
         result = []

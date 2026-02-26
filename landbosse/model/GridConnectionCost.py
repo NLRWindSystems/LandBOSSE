@@ -8,27 +8,16 @@ from .CostModule import CostModule
 
 class GridConnectionCost(CostModule):
     """
-    TransDistCost.py
-     - Created by Annika Eberle and Owen Roberts on Dec. 17, 2018
-     - Refactored by Parangat Bhaskar and Alicia Key on June 3, 2019
-
-    Calculates the costs associated with transmission and distribution for land-based wind projects (module is currently based on curve fit of empirical data)
-
+    Calculates the costs associated with transmission and distribution for land-based wind projects
+    (module is currently based on curve fit of empirical data)
+    
     * Get distance to interconnection
     * Get interconnection voltage
     * Get toggle for new switchyard
     * Return total transmission and distribution costs
-
-    \n\n**Keys in the input dictionary are the following:**
-
-    distance_to_interconnect_mi
-        (float) distance to interconnection [in miles]
-
-    \n\n**Keys in the output dictionary are the following:**
-
-    trans_dist_usd
-        (float) total transmission and distribution costs [in USD]
-
+    
+    - Created by Annika Eberle and Owen Roberts on Dec. 17, 2018
+    - Refactored by Parangat Bhaskar and Alicia Key on June 3, 2019
     """
 
     def __init__(self, input_dict, output_dict , project_name):
@@ -36,12 +25,16 @@ class GridConnectionCost(CostModule):
         Parameters
         ----------
         input_dict : dict
-            The input dictionary with key value pairs described in the
-            class documentation
+            The input dictionary with key value pairs:
+            
+                distance_to_interconnect_mi
+                    (float) distance to interconnection [in miles
 
         output_dict : dict
-            The output dictionary with key value pairs as found on the
-            output documentation.
+            The output dictionary with key value pairs:
+
+                trans_dist_usd
+                    (float) total transmission and distribution costs [in USD]
         """
         self.input_dict = input_dict
         self.output_dict = output_dict
@@ -50,10 +43,6 @@ class GridConnectionCost(CostModule):
     def calculate_costs(self, calculate_costs_input_dict, calculate_costs_output_dict):
         """
         Function to calculate total costs for transmission and distribution.
-
-        Parameters
-        ----------
-        <None>
 
         Returns
         -------
@@ -107,11 +96,11 @@ class GridConnectionCost(CostModule):
         Creates a list of dictionaries which can be used on their own or
         used to make a dataframe.
 
-        Must be called after self.run_module()
+        Must be called after ``run_module``
 
         Returns
         -------
-        list(dict)
+        list[dict]
             A list of dicts, with each dict representing a row of the data.
         """
         result = []
@@ -141,7 +130,7 @@ class GridConnectionCost(CostModule):
 
         Returns
         -------
-        list
+        list[dict]
             List of dicts, with each dict representing a row for
             the output.
         """
@@ -168,10 +157,6 @@ class GridConnectionCost(CostModule):
     def run_module(self):
         """
         Runs the TransDistCost module and populates the IO dictionaries with calculated values.
-
-        Parameters
-        ----------
-        <None>
 
         Returns
         -------
