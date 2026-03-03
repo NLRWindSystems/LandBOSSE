@@ -5,5 +5,5 @@ format: jb-book
 root: intro
 chapters:
 - file: api
-- file: examples
+- file: example
 - file: contributing
