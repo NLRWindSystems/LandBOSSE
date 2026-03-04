@@ -96,28 +96,6 @@ class LandBOSSERunner:
         "labor_cost_multiplier": "Multiplier to modify labor costs",
         "crane_breakdown_fraction": "What fraction of cranes will breakdown. 0 means none, 1 means "
         "all. Breakdowns increase the total erection duration",
-        "component": {
-            "nacelle": {
-                "mass_t": "nacelle mass (t)",
-                "surface_area_m2": "nacelle surface area (m^2)",
-            },
-            "hub": {
-                "mass_t": "hub mass (t)",
-                "surface_area_m2": "hub surface area (m^2)",
-            },
-            "blade": {
-                "mass_t": "Blade mass (t) (one blade)",
-                "surface_area_m2": "Blade surface area (m^2) (one blade)",
-            },
-            "tower_section": {
-                "mass_t": "List of tower section masses (t), from bottom to top. Must be the same "
-                "length as the other tower section attributes",
-                "surface_area_m2": "List of tower section surface areas (m^2), from bottom to top. "
-                "Must be the same legnth as the other tower section attributes",
-                "height_m": "List of tower section heights (m), from bottom to top. Must be the "
-                "same length as the other tower section attributes",
-            },
-        },
     }
 
     # Mapping from new parameter input names to those expected by LandBOSSE
@@ -340,99 +318,6 @@ class LandBOSSERunner:
             ignore_index=True,
         )
         return weather_window
-
-    @staticmethod
-    def create_component_dataframe(
-        project_parameters: pd.Series,
-        data_sheets: dict[str, pd.DataFrame],
-    ) -> pd.DataFrame:
-        """Convert the data from the input component data dictionary to the dataframe format
-        required by LandBOSSE. This includes rows for each separate blade and tower section.
-
-        Parameters
-        ----------
-        project_parameters : pd.Series
-            LandBOSSE YAML inputs
-        data_sheets : dict[str, pd.DataFrame]
-            LandBOSSE excel input tables
-
-        Returns
-        -------
-        pd.DataFrame
-            Component data in LandBOSSE format
-        """
-        NUM_BLADES = 3
-
-        component_param = project_parameters["component"]
-        component_template = data_sheets["components"]
-
-        component_nacelle = pd.Series(component_param["nacelle"], name="Nacelle")
-        component_nacelle["Component"] = "Nacelle"
-
-        component_hub = pd.Series(component_param["hub"], name="Hub")
-        component_hub["Component"] = "Hub"
-
-        component_blade = component_param["blade"]
-        component_blade["Component"] = "Blade"
-
-        component_blade = pd.Series(component_blade)
-        component_blade = pd.concat(
-            objs={f"Blade {i+1:d}": component_blade for i in range(NUM_BLADES)},
-            axis=1,
-        )
-
-        component_tower_section = pd.DataFrame(component_param["tower_section"])
-        component_tower_section["Component"] = "Tower section"
-        component_tower_section = component_tower_section.set_axis(
-            [f"Tower section {i+1:d}" for i in range(len(component_tower_section.index))],
-        )
-        component_tower_section["lift_height_m"] = (
-            component_tower_section["height_m"].shift(-1).cumsum()
-        )
-        component_tower_section["lever_arm_m"] = (
-            component_tower_section["lift_height_m"] + component_tower_section["height_m"] / 2.0
-        )
-
-        component_df = pd.concat(
-            objs=(component_nacelle, component_hub, component_blade, component_tower_section.T),
-            axis=1,
-        ).T
-
-        hub_height = project_parameters["Hub height m"]
-        component_df = component_df.astype(
-            {
-                "height_m": float,
-                "lift_height_m": float,
-                "lever_arm_m": float,
-            }
-        )
-        component_df = component_df.fillna(
-            {
-                "height_m": 0.0,
-                "lift_height_m": hub_height,
-                "lever_arm_m": hub_height,
-            }
-        )
-        component_df = component_df.rename(
-            columns={
-                "mass_t": "Mass tonne",
-                "surface_area_m2": "Surface area sq m",
-                "height_m": "Section height m",
-                "lift_height_m": "Lift height m",
-                "lever_arm_m": "Lever arm m",
-            }
-        )
-
-        component_combined = component_df.merge(component_template, on="Component")
-        component_combined = component_combined.drop(columns="Component")
-        component_combined.insert(
-            loc=0,
-            value=component_df.index,
-            column="Component",
-        )
-        component_combined = component_combined.convert_dtypes()
-
-        return component_combined
 
 
 if __name__ == "__main__":
