@@ -1,5 +1,16 @@
 # LandBOSSE Changelog
 
+## Unreleased
+
++ Corrects an error in multiple names defined for `LandBOSSERunner`s data connection to project
+  Excel file, which is now called "data_tables", consistent with the implementation made in
+  the `WAVES` integration.
++ Removes the reliance on `component` data being provided outside the Excel project data to reduce
+  duplicated data definitions.
++ Makes the `weather` input to `LandBOSSERunner` optional, so that the Excel "weather_window" sheet
+  will still be used if provided. If `weather` is provided as an input, it will override the the
+  Excel-defined "weather_window" sheet.
+
 ## 2.6.2 (February 26, 2026)
 
 + Docstrings are reformatted to display nicely on a Jupyter Book documentation site.
