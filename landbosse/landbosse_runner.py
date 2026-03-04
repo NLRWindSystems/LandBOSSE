@@ -3,6 +3,7 @@ a LandBOSSEResult class to contain these results.
 """
 
 import typing
+from copy import deepcopy
 
 import attrs
 import pandas as pd
@@ -122,7 +123,7 @@ class LandBOSSERunner:
     # Mapping from new parameter input names to those expected by LandBOSSE
     keys_rename: typing.ClassVar[dict] = {
         "id": "Project ID",
-        "datafile": "Project data file",
+        "data_tables": "Project data file",
         "construction_months": "Total project construction time (months)",
         "turbine_rating_MW": "Turbine rating MW",
         "hub_height_m": "Hub height m",
@@ -176,7 +177,8 @@ class LandBOSSERunner:
 
     input_config: dict = attrs.field(converter=dict)
     weather: pd.DataFrame = attrs.field(
-        validator=attrs.validators.instance_of(pd.DataFrame),
+        default=None,
+        validator=attrs.validators.optional(attrs.validators.instance_of(pd.DataFrame)),
     )
     result: LandBOSSEResult = attrs.field(
         validator=attrs.validators.instance_of(LandBOSSEResult),
@@ -216,8 +218,12 @@ class LandBOSSERunner:
         -------
         pd.Series
             Series containing input parameters for LandBOSSE with the required names
+        dict[str, pd.DataFrame]
+            Dictionary of the Excel project data with each sheet's name as a key and the
+            data loaded as a pandas DataFrame.
         """
-        project_parameters_dict = self.input_config
+        project_parameters_dict = deepcopy(self.input_config)
+        data_sheets = project_parameters_dict.pop("data_tables")
 
         # Convert parameters dict to pandas Series (LandBOSSE expects a Series)
         project_parameters = pd.Series(project_parameters_dict, name="value")
@@ -237,7 +243,7 @@ class LandBOSSERunner:
 
         project_parameters["Project ID with serial"] = project_parameters["Project ID"]
 
-        return project_parameters
+        return project_parameters, data_sheets
 
     def run(self) -> None:
         """Run the LandBOSSE model and save outputs in a LandBOSSEResult object instead of excel
@@ -248,14 +254,11 @@ class LandBOSSERunner:
         LandBOSSEResult
             Outputs from LandBOSSE model
         """
-        project_parameters = self.get_project_parameters()
-        data_sheets = project_parameters.pop("data_table")
+        project_parameters, data_sheets = self.get_project_parameters()
 
-        # Read WAVES weather data into expected LandBOSSE format
-        data_sheets["weather_window"] = self.add_header_to_weather_dataframe(self.weather)
-
-        # Convert YAML component info into table format expected by LandBOSSE
-        data_sheets["components"] = self.create_component_dataframe(project_parameters, data_sheets)
+        # Prioritize weather profile provided at initialization over existing "weather_window" in Excel
+        if self.weather is not None:
+            data_sheets["weather_window"] = self.add_header_to_weather_dataframe(self.weather)
 
         xlsx_reader = XlsxReader()
         xlsx_reader.modify_project_data_and_project_list(data_sheets, project_parameters)
@@ -364,13 +367,13 @@ class LandBOSSERunner:
         component_template = data_sheets["components"]
 
         component_nacelle = pd.Series(component_param["nacelle"], name="Nacelle")
-        component_nacelle["Component Name"] = "Nacelle"
+        component_nacelle["Component"] = "Nacelle"
 
         component_hub = pd.Series(component_param["hub"], name="Hub")
-        component_hub["Component Name"] = "Hub"
+        component_hub["Component"] = "Hub"
 
         component_blade = component_param["blade"]
-        component_blade["Component Name"] = "Blade"
+        component_blade["Component"] = "Blade"
 
         component_blade = pd.Series(component_blade)
         component_blade = pd.concat(
@@ -379,7 +382,7 @@ class LandBOSSERunner:
         )
 
         component_tower_section = pd.DataFrame(component_param["tower_section"])
-        component_tower_section["Component Name"] = "Tower section"
+        component_tower_section["Component"] = "Tower section"
         component_tower_section = component_tower_section.set_axis(
             [f"Tower section {i+1:d}" for i in range(len(component_tower_section.index))],
         )
@@ -420,8 +423,8 @@ class LandBOSSERunner:
             }
         )
 
-        component_combined = component_df.merge(component_template, on="Component Name")
-        component_combined = component_combined.drop(columns="Component Name")
+        component_combined = component_df.merge(component_template, on="Component")
+        component_combined = component_combined.drop(columns="Component")
         component_combined.insert(
             loc=0,
             value=component_df.index,
