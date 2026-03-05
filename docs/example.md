@@ -95,19 +95,52 @@ exactly this purpose. However, those data are not exemplified below.
 
 #### `components`
 
-- Component
-- Mass tonne
-- Lift height m
-- Surface area sq m
-- Coeff drag
-- Coeff drag (installed)
-- Section height m
-- Lever arm m
-- Cycle time installation hrs
-- Offload hook height m
-- Offload cycle time hrs
-- Multplier drag rotor
-- Multiplier tower drag
+Component
+: Name of the component; can be specific or generic. For items where there are more than one of them
+  or they are are part of a whole like tower sections or blades, number them using 1-indexing,
+  e.g., "Tower 1", "Tower 2", "Tower 3".
+
+Mass tonne
+: Mass in metric tonnes.
+
+Lift height m
+: Height, in $m$, that a crane will have to lift the component in order to complete assembly.
+
+Surface area sq m
+: Total surface area, in $m^2$, of a cross-section of the component. This will be used for
+  calculating thefoundational load.
+
+Coeff drag
+: Coefficient of drag. This will be used to understand the effective mass while lifting the component.
+
+Coeff drag (installed)
+: Coefficient of drag once the component is installed. This will be used for calculating the
+  foundational load.
+
+Section height m
+: Total height ($m$) of a cross-section of the component. This will be used for calculating the
+  foundational load.
+
+Lever arm m
+: Perpendicular distance, in $m$, from center of the foundation.
+
+Cycle time installation hrs
+: Amount of time, in hours, required to prepare the component for assembly.
+
+Offload hook height m
+: Height of the hook ($m$) above the top of the component to account for the total height of the crane's lift.
+
+Offload cycle time hrs
+: Amount of time (in hours) required to detach the component from the crane.
+
+Multplier drag rotor
+: Multiplier for accounting for the additional drag of the rotor for computing the foundation load.
+  This should only apply to the nacelle and blades
+
+Multiplier tower drag
+: Multiplier for accounting for the additional drag of the tower for computing the foundation load.
+
+The following data are used for the GE 1.5 MW public example (`ge15_public.xlsx`).
 
 | Component         |   Mass tonne |   Lift height m |   Surface area sq m |   Coeff drag |   Coeff drag (installed) |   Section height m |   Lever arm m |   Cycle time installation hrs |   Offload hook height m |   Offload cycle time hrs |   Multplier drag rotor |   Multiplier tower drag |
 |-------------------|--------------|-----------------|---------------------|--------------|--------------------------|--------------------|---------------|-------------------------------|-------------------------|--------------------------|------------------------|-------------------------|
@@ -122,14 +155,31 @@ exactly this purpose. However, those data are not exemplified below.
 
 #### `cable_specs`
 
-- Array Cable
-- Conductor Size (mm2)
-- Current Capacity (A)
-- Rated Voltage (V)
-- AC Resistance (Ohms/km)
-- Inductance (mH/km)
-- Capacitance (nF/km)
-- Cost (USD/LF)
+Array Cable
+: Name or type of the array cable.
+
+Conductor Size (mm2)
+: Cable cross section, in $mm^2$.
+
+Current Capacity (A)
+: Cable current capacity at 1m burial depth, in $A$.
+
+Rated Voltage (V)
+: Cable rated line-to-line voltage, in $V$.
+
+AC Resistance (Ohms/km)
+: Cable resistance for the AC current per kilometer, in $\frac{\omega}{km}$
+
+Inductance (mH/km)
+: Cable inductance per kilometer, in $\frac{mH}{km}$
+
+Capacitance (nF/km)
+: Cable capacitance per kilometer, in $\frac{nF}{km}$
+
+Cost (USD/LF)
+: Cost of the cable per linear foot ($\frac{USD}{LF}$).
+
+The following data are used for the GE 1.5 MW public example (`ge15_public.xlsx`).
 
 | Array Cable   |   Conductor Size (mm2) |   Current Capacity (A) |   Rated Voltage (V) |   AC Resistance (Ohms/km) |   Inductance (mH/km) |   Capacitance (nF/km) |   Cost (USD/LF) |
 |---------------|------------------------|------------------------|---------------------|---------------------------|----------------------|-----------------------|-----------------|
@@ -141,11 +191,23 @@ exactly this purpose. However, those data are not exemplified below.
 
 #### `equip`
 
-- Equipment ID
-- Operation
-- Equipment name
-- Crane capacity tonne
-- Number of equipment
+Equipment ID
+: Unique identififer for the equipment group.
+
+Operation
+: One of "Top", "Base", or "Offload" to indicate what grouping of operations the equipment can
+  perform.
+
+Equipment name
+: Name of the equipment in the equipment group.
+
+Crane capacity tonne
+: Maximum capacityof the crane, in metric tonnes.
+
+Number of equipment
+: Number of the equipment used during the operation.
+
+The following subset of the data are used for the GE 1.5 MW public example (`ge15_public.xlsx`).
 
 | Equipment ID   | Operation   | Equipment name   |   Crane capacity tonne |   Number of equipment |
 |----------------|-------------|------------------|------------------------|-----------------------|
@@ -163,20 +225,57 @@ exactly this purpose. However, those data are not exemplified below.
 
 #### `crane_specs`
 
-- Boom system
-- Crane capacity tonne
-- Speed of travel km per hr
-- Hoist speed m per min
-- Crew type ID
-- Equipment ID
-- Setup time hr
-- Breakdown time hr
-- Max wind speed m per s
-- Hub height m
-- Max capacity tonne
-- Radius m
-- Hook Height m
-- Mobilization cost USD
+Equipment name
+: Name matching with the `equip` sheet.
+
+Crane name
+: Crane model name
+
+Boom system
+: Type of boom system used on the crane. Primarily used for logging crane details.
+
+Crane capacity tonne
+: Maximum crane capacity. Used for matching cranes to components for ideal assembly costs and speeds.
+
+Speed of travel km per hr
+: Ground travel speed, in $km/h$
+
+Hoist speed m per min
+: Crane lifting rate, in $m/min$.
+
+Crew type ID
+: Unique identifer for the type of crew required for the operation.
+
+Equipment ID
+: Unique identifier matching with the `equip` sheet.
+
+Setup time hr
+: Amount of time, in hours, required for the crane to be prepared at a new lift location.
+
+Breakdown time hr
+: Amount of time, in hours, required for the crane to be broken down prior to being moved to a new
+  lift location.
+
+Max wind speed m per s
+: Maximum allowable windspeed allowed during operations, in $m/s$.
+
+Hub height m
+: Maximum lift height for the crane, in $m$.
+
+Max capacity tonne
+: Maximum lift capacity for the crane, in metric tonnes.
+
+Radius m
+: Undefined, and potentially unused.
+
+Hook Height m
+: Height of the hook above the top of the component to be lifted. Used for the total lift mass and
+  wind speed calculations.
+
+Mobilization cost USD
+: Cost to mobilize the crane for the duration of the installation period, in USD.
+
+The following subset of the data are used for the GE 1.5 MW public example (`ge15_public.xlsx`).
 
 | Equipment name   | Crane name   | Boom system      |   Crane capacity tonne |   Speed of travel km per hr |   Hoist speed m per min | Crew type ID   | Equipment ID   |   Setup time hr |   Breakdown time hr |   Max wind speed m per s |   Hub height m |   Max capacity tonne |   Radius m |   Hook Height m |   Mobilization cost USD |
 |------------------|--------------|------------------|------------------------|-----------------------------|-------------------------|----------------|----------------|-----------------|---------------------|--------------------------|----------------|----------------------|------------|-----------------|-------------------------|
@@ -194,9 +293,16 @@ exactly this purpose. However, those data are not exemplified below.
 
 #### `development`
 
-- Type of cost
-- Cost USD
-- Phase of construction
+Type of cost
+: Development cost category.
+
+Cost USD
+: Total cost, in USD.
+
+Phase of construction
+: Phase of construction where the cost is incurred, likely alway "Development".
+
+The following data are used for the GE 1.5 MW public example (`ge15_public.xlsx`).
 
 |     Type of cost |   Cost USD |   Phase of construction |
 |------------------|------------|-------------------------|
@@ -208,9 +314,16 @@ exactly this purpose. However, those data are not exemplified below.
 
 #### `crew_price`
 
-- Labor type ID
-- Hourly rate USD per hour
-- Per diem USD per day
+Labor type ID
+: Unique labor type identifier, matching with `crew`.
+
+Hourly rate USD per hour
+: Hourly cost of the crew per hour, in $USD/hr$.
+
+Per diem USD per day
+: Daily cost for food, etc. for the type of crew member, in $USD/day$.
+
+The following subset of the data are used for the GE 1.5 MW public example (`ge15_public.xlsx`).
 
 |        Labor type ID |   Hourly rate USD per hour |   Per diem USD per day |
 |----------------------|----------------------------|------------------------|
@@ -228,11 +341,22 @@ exactly this purpose. However, those data are not exemplified below.
 
 #### `crew`
 
-- Crew type ID
-- Operation
-- Crew name
-- Labor type ID
-- Number of workers
+Crew type ID
+: Unique crew type identifier, matching with `crane_specs`
+
+Operation
+: General operational category for the type of crew member.
+
+Crew name
+: Name of the crew type.
+
+Labor type ID
+: Unique labor type identifier for the type of crew member.
+
+Number of workers
+: Number of workers in the labor type that make up one unit of the crew.
+
+The following subset of the data are used for the GE 1.5 MW public example (`ge15_public.xlsx`).
 
 |   Crew type ID |             Operation |                      Crew name | Labor type ID        |   Number of workers |
 |----------------|-----------------------|--------------------------------|----------------------|---------------------|
@@ -250,11 +374,22 @@ exactly this purpose. However, those data are not exemplified below.
 
 #### `equip_price`
 
-- Equipment name
-- Crane capacity tonne
-- Equipment price USD per hour
-- Cost USD per breakdown
-- Fuel consumption gal per day
+Equipment name
+: Name of the equipment.
+
+Crane capacity tonne
+: Maximum capacity of the crane, in metric tonnes.
+
+Equipment price USD per hour
+: Hourly cost of the equipment, in $USD/hr$.
+
+Cost USD per breakdown
+: Total cost to breakdown the equipment before moving to another lift site, in USD.
+
+Fuel consumption gal per day
+: Expected daily fuel consumption, in $gal/day$.
+
+The following subset of the data are used for the GE 1.5 MW public example (`ge15_public.xlsx`).
 
 |   Equipment name |   Crane capacity tonne |   Equipment price USD per hour |   Cost USD per breakdown |   Fuel consumption gal per day |
 |------------------|------------------------|--------------------------------|--------------------------|--------------------------------|
@@ -272,9 +407,16 @@ exactly this purpose. However, those data are not exemplified below.
 
 #### `material_price`
 
-- Material type ID
-- Material price USD per unit
-- Unit
+Material type ID
+: Unique material identifier
+
+Material price USD per unit
+: Cost of the materials per unit, in $USD/unit$.
+
+Unit
+: Measurement units used for measuring the material's quantity.
+
+The following data are used for the GE 1.5 MW public example (`ge15_public.xlsx`).
 
 |                   Material type ID |   Material price USD per unit |                          Unit |
 |------------------------------------|-------------------------------|-------------------------------|
@@ -289,15 +431,34 @@ exactly this purpose. However, those data are not exemplified below.
 
 #### `rsmeans`
 
-- Operation ID
-- Type of cost
-- Material type ID
-- Rate USD per unit
-- Units
-- Daily output
-- Per Diem Hours (per unit)
-- Module
-- Number of workers
+Operation ID
+: Unique identifier for the operation.
+
+Type of cost
+: Cost category.
+
+Material type ID
+: Type of material used, should match `material_price`.
+
+Rate USD per unit
+: Cost per unit, in $USD/unit$
+
+Units
+: Measurment units.
+
+Daily output
+: Daily output of the operation.
+
+Per Diem Hours (per unit)
+: Additional hourly per diem costs per measured unit.
+
+Module
+: Construction phase category. Should be one of "Foundations", "Roads", or "Collection".
+
+Number of workers
+: Number of workers required for the operation type.
+
+The following subset of data are used for the GE 1.5 MW public example (`ge15_public.xlsx`).
 
 |                                 Operation ID |     Type of cost |                   Material type ID |   Rate USD per unit | Units                        |   Daily output |   Per Diem Hours (per unit) | Module      |   Number of workers |
 |----------------------------------------------|------------------|------------------------------------|---------------------|------------------------------|----------------|-----------------------------|-------------|---------------------|
@@ -311,13 +472,20 @@ exactly this purpose. However, those data are not exemplified below.
 | Compaction of soil (subgrade and crane path) | Equipment rental |                                    |                1.15 | embankment cubic yards crane |                |                           0 | Roads       |                   3 |
 | Mass material movement (cut and fill)        | Equipment rental |                                    |                     |                              |                |                             | Roads       |                     |
 | Placing road base (hauling)                  | Equipment rental | Road base - 3/4 inch crushed stone |                5.16 | loose cubic yard             |                |                           0 | Roads       |                   1 |
-| ...                                          | ...              | ...                                |                 ... | ...                          |            ,,, |                         ... | ...         |                 ... |
+| ...                                          | ...              | ...                                |                 ... | ...                          |            ... |                         ... | ...         |                 ... |
 
 #### `site_facility_building_area`
 
-- Size Min (MW)
-- Size Max (MW)
-- Building area (sq. ft.)
+Size Min (MW)
+: Minimum wind power plant size to estimate the site facility building size, in $MW$.
+
+Size Max (MW)
+: Maximum wind power plant size to estimate the site facility building size, in $MW$.
+
+Building area (sq. ft.)
+: Building size for site facilities, in ${ft}^2$.
+
+The following data are used for the GE 1.5 MW public example (`ge15_public.xlsx`).
 
 |   Size Min (MW) |   Size Max (MW) |   Building area (sq. ft.) |
 |-----------------|-----------------|---------------------------|
@@ -329,13 +497,15 @@ exactly this purpose. However, those data are not exemplified below.
 
 #### `weather_window`
 
-The hourly weather profiles uses 4 columns with 3 header rows formatted like the
-following table:
+The hourly weather profiles uses 4 columns with 3 header rows formatted like the following table.
+In the following data, taken from the GE 1.5 MW public example (`ge15_public.xlsx`), the first
+row should contain the measurement units, and the second row should indicate the height at which
+the measurement was taken, in $m$.
 
 |                     | Temperature | Pressure   | Direction | Speed  |
+| ------------------- | ----------- | ---------- | --------- | ------ |
 |                     | C           | atm        | Degrees   | m/s    |
 |                     | 100         | 100        | 100       | 100    |
-| ------------------- | ----------- | ---------- | --------- | ------ |
 | 2012-01-01 12:00:00 | 2.444       | 0.95205318 | 185       | 8.681  |
 | 2012-01-01 13:00:00 | 1.655       | 0.95227456 | 270       | 7.234  |
 | 2012-01-01 14:00:00 | 2.512       | 0.9524854  | 322       | 12.898 |
@@ -343,7 +513,6 @@ following table:
 | 2012-01-01 16:00:00 | 1.534       | 0.95440628 | 323       | 15.076 |
 | 2012-01-01 17:00:00 | 1.014       | 0.95551016 | 322       | 15.53  |
 | ...                 | ...         | ...        | ...       | ...    |
-
 
 ## Running LandBOSSE
 
