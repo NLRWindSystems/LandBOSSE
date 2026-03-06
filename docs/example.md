@@ -516,6 +516,98 @@ the measurement was taken, in $m$.
 
 ## Running LandBOSSE
 
+The two primary means for running LandBOSSE are through the terminal using only Excel-based data,
+or through Python (script, IDE, Jupyter Notebook, etc.). The following sections will walk through
+running LandBOSSE through each of these methods.
+
 ### Terminal
 
+Per the installation instructions, this example assumes your conda (or other) Python environment
+has been created and LandBOSSE has been installed.
+
+1. Determine the desired input and output folder locations for your data.
+2. Configure your project listing Excel file and the project data Excel file for each listed project
+   described in [Project Input Data](#project-input-data).
+   
+   :::{important} The name of the project listing must be called `project_list.xlsx` as it will
+   be the only file that is used for running projects.
+   :::
+
+3. Open a terminal (or Anaconda Prompt or other) session.
+4. Navigate to where LandBOSSE has been downloaded. In the terminal:
+   
+   ```bash
+   cd /path/to/LandBOSSE
+   ```
+
+5. Activate your Python environment. For conda environments, but be sure to use the name of your
+   environment:
+
+    ```bash
+    conda activate landbose
+    ```
+
+6. Run all validLandBOSSE, where `-i` can be substituted for `--input`, and `-o` for `--output`.
+
+    ```bash
+    python main.py -i /path/to/input-folder -o /path/to/output-folder
+    ```
+
+    Additional run flags also exist:
+
+    - `-s` or `--scaling` for scaling study mode. This method modifies each row of the project list
+      after it has been modified by the parameters for to scale certain input values based on what
+      has been parametrically modified.
+    - `-v` or `--validate` which creates the file path for the output file from prior LandBOSSE run
+      that will be used to check latest run. The validation output file must be in the inputs folder
+      and must be called `landbosse-output-validation.xlsx`.
+
 ### `LandBOSSERunner`
+
+1. Determine the desired input and output folder locations for your data.
+2. Configure your project listing Excel file and the project data Excel file for each listed project
+   described in [Project Input Data](#project-input-data).
+3. In a Python script, Jupyter Notebook, etc., some form of the following code can be used to run
+   a single project listing.
+
+   ```python
+   from pathlib import Path
+   
+   import yaml
+   import pandas as pd
+ 
+   from landbosse.landbosse_runner import LandBOSSERunner
+
+   # If your data are stored in a YAML file (preferable), load them first, or
+   # create a data dictionary in place of the following code.
+   with Path("/path/to/my_project_data.yaml").open() as f:
+       inputs = yaml.safe_load(f)
+
+   # Load the Excel project data. If the value of "data_tables" is relative to where the
+   # code will be run, simply exclude the `data_path` portion of the following code.
+   data_path = Path("/path/to/data_tables/").resolve()
+   inputs["data_tables"] = pd.read_excel(
+       data_path /inputs["data_tables"], sheet_name=None
+   )
+
+   # Optional: load alternative weather data
+   weather = pd.read_csv("/my/weather/data.csv")  # replace csv with your file format
+   weather = LandBOSSERunner.add_header_to_weather_dataframe(weather)
+
+   # Create your runner object, and run the analysis. Simply exclude the weather
+   # keyword argument if yours is contained in the `data_tables`
+   lb = LandBOSSERunner(input_config=inputs, weather=weather)
+   lb.run()
+   ```
+
+4. Once the above code (or similar) is successfully run, the `result` object is created and attched
+   to the `LandBOSSERunner`. For complete details please see the `LandBOSSEResult` API documentation.
+   The `lb.result` (using the above examples naming convention for the runner object) contains the
+   following attributes as separate Pandas Series or DataFrames, and can be saved to CSV or one
+   Excel book as desired.
+
+   - `project_parameters`: The values provided from the input dictionary.
+   - `data_sheets`: The Excel project data loaded as a dictionary of dataframes.
+   - `model_variables`: A copy of the model details that would traditionally be saved to Excel
+     when running LandBOSSE through the terminal.
+   - `operation_cost`: The detailed operational cost logs for the simulated installation.
