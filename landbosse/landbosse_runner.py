@@ -4,6 +4,7 @@ a LandBOSSEResult class to contain these results.
 
 import typing
 from copy import deepcopy
+from pathlib import Path
 
 import attrs
 import pandas as pd
@@ -96,6 +97,7 @@ class LandBOSSERunner:
         "labor_cost_multiplier": "Multiplier to modify labor costs",
         "crane_breakdown_fraction": "What fraction of cranes will breakdown. 0 means none, 1 means "
         "all. Breakdowns increase the total erection duration",
+        "user_trench_length_flag": "Flag (0 = no; 1 = yes) to indicate if the user-defined trench length should be used"
     }
 
     # Mapping from new parameter input names to those expected by LandBOSSE
@@ -151,6 +153,8 @@ class LandBOSSERunner:
         "DW only)",
         "labor_cost_multiplier": "Labor cost multiplier",
         "crane_breakdown_fraction": "Crane breakdown fraction",
+        "combined_homerun_trench_length_km": "Combined Homerun Trench Length to Substation (km)", 
+        "user_trench_length_flag": "Flag for user-defined home run trench length (0 = no; 1 = yes)",
     }
 
     input_config: dict = attrs.field(converter=dict)
@@ -165,6 +169,38 @@ class LandBOSSERunner:
 
     def __attrs_post_init__(self):
         self.check_expected_configs_are_provided(self.input_config)
+
+    @staticmethod
+    def convert_excel_to_dict(
+        filename: str | Path,
+        project_id: str,
+        *,
+        enable_cost_and_scaling_modifications: bool = False,
+    ) -> dict:
+        """Convert a :py:attr:`project_id` from an Excel project list to a ``LandBOSSERunner``
+        compliant dictionary.
+
+        Parameters
+        ----------
+        filename : str | Path
+            The project list file where the project's data can be found.
+        project_id : str
+            The ID for the project in the "Project ID" column of the project list.
+        enable_cost_and_scaling_modifications : bool, optional
+            Whether or not to enable the cost and scaling modifications, by default False.
+
+        Returns
+        -------
+        dict
+            The project listing data for a given :py:attr:`project_id` converted to a ``LandBOSSERunner``-compliant
+            format.
+        """
+        df = pd.read_excel(filename)
+        data = df.loc[df["Project ID"].eq(project_id)].reset_index(drop=True).loc[0].to_dict()
+        keys_rename = {v: k for k, v in LandBOSSERunner.keys_rename.items()}
+        data = {keys_rename.get(k, k): v for k, v in data.items()}
+        data["enable_cost_and_scaling_modifications"] = enable_cost_and_scaling_modifications
+        return data
 
     def check_expected_configs_are_provided(self, input_config: dict) -> None:
         """Checks to ensure all inputs required by the model have been provided.
