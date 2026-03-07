@@ -52,6 +52,7 @@ dictionary key's value.
 | 50-year Gust Velocity (m/s)                                          | gust_velocity_50_year_m/s                       | 50 year wind gust velocity (m/s)                                                                                                                |
 | Line Frequency (Hz)                                                  | line_frequency                                  | Electrical frequency of grid (Hz)                                                                                                               |
 | Combined homerun trench length to substation (km)                    | combined_homerun_trench_length_km               | Combined homerun trench length to substation (km) (optional - can be null but cannot be omitted)                                                |
+| Flag for user-defined home run trench length (0 = no; 1 = yes)       | user_trench_length_flag                         | Flag (0 = no; 1 = yes) to indicate if the user-defined trench length should be used                                                             |
 | Non-Erection Wind Delay Critical Height (m)                          | non_erection_wind_delay_critical_height_m       | When calculating wind delays for non-erection tasks, shear values to this height (m)                                                            |
 | Non-Erection Wind Delay Critical Speed (m/s)                         | non_erection_wind_delay_critical_wind_speed_m/s | When calculating wind delays for non-erection tasks, wind speeds above this value will force work to stop (m/s)                                 |
 | Distance to interconnect (miles)                                     | distance_to_interconnect_mi                     | Distance from substation to switchyard (miles)                                                                                                  |
@@ -94,6 +95,10 @@ of the sheets in `ge15_public.xlsx`, there will be one or multiple notes and sou
 exactly this purpose. However, those data are not exemplified below.
 
 #### `components`
+
+The `components` sheet contains detailed information about any large scale, assembled on-site
+component, such as tower sections, the nacelle, or blades. Each individual component should be
+recorded in a single row (i.e. each blade gets 1 row even if they are exactly the same).
 
 Component
 : Name of the component; can be specific or generic. For items where there are more than one of them
@@ -155,6 +160,9 @@ The following data are used for the GE 1.5 MW public example (`ge15_public.xlsx`
 
 #### `cable_specs`
 
+The `cable_specs` sheet should contain information about the array cables potentially used on site.
+The specific types and quantities will be sized according to LandBOSSE's collection system.
+
 Array Cable
 : Name or type of the array cable.
 
@@ -191,6 +199,10 @@ The following data are used for the GE 1.5 MW public example (`ge15_public.xlsx`
 
 #### `equip`
 
+The `equip` sheet is for information about the equipment grouping required for each general operational
+category. The optimal equipment will be chosen based on a comparison of the equipment grouping's
+capabilities and the components being lifted.
+
 Equipment ID
 : Unique identififer for the equipment group.
 
@@ -224,6 +236,9 @@ The following subset of the data are used for the GE 1.5 MW public example (`ge1
 | ...            | ...         | ...              |                    ... |                   ... |
 
 #### `crane_specs`
+
+The `crane_specs` sheet should contain all the detailed information about a crane's operating
+limits and capacities.
 
 Equipment name
 : Name matching with the `equip` sheet.
@@ -293,6 +308,9 @@ The following subset of the data are used for the GE 1.5 MW public example (`ge1
 
 #### `development`
 
+The `development` sheet contains any project development costs that are unaccounted for in the other
+project specifications.
+
 Type of cost
 : Development cost category.
 
@@ -313,6 +331,9 @@ The following data are used for the GE 1.5 MW public example (`ge15_public.xlsx`
 | Other            | 0          | Development             |
 
 #### `crew_price`
+
+The `crew_price` sheet contains information about the hourly and daily costs of having a single crew
+member on site for each labor category.
 
 Labor type ID
 : Unique labor type identifier, matching with `crew`.
@@ -340,6 +361,8 @@ The following subset of the data are used for the GE 1.5 MW public example (`ge1
 | ...                  | ...                        | ...                    |
 
 #### `crew`
+
+The `crew` sheet is for information about the amount and type of labor required in a crew category.
 
 Crew type ID
 : Unique crew type identifier, matching with `crane_specs`
@@ -374,6 +397,8 @@ The following subset of the data are used for the GE 1.5 MW public example (`ge1
 
 #### `equip_price`
 
+The `equip_price` sheet is for information about the operational costs for a single crane.
+
 Equipment name
 : Name of the equipment.
 
@@ -407,6 +432,9 @@ The following subset of the data are used for the GE 1.5 MW public example (`ge1
 
 #### `material_price`
 
+The `material_price` sheet is about the construction materials costs for aspects such as road and
+foundation building, not turbine components.
+
 Material type ID
 : Unique material identifier
 
@@ -430,6 +458,8 @@ The following data are used for the GE 1.5 MW public example (`ge15_public.xlsx`
 | Backfill                           | 0                             | cubic yard                    |
 
 #### `rsmeans`
+
+The `rsmeans` sheet for any relevant RSMeans operational cost data.
 
 Operation ID
 : Unique identifier for the operation.
@@ -475,6 +505,9 @@ The following subset of data are used for the GE 1.5 MW public example (`ge15_pu
 | ...                                          | ...              | ...                                |                 ... | ...                          |            ... |                         ... | ...         |                 ... |
 
 #### `site_facility_building_area`
+
+The `site_facility_building_area` is for sizing the wind farm's on-site facility appropriately for
+the wind power plant's size.
 
 Size Min (MW)
 : Minimum wind power plant size to estimate the site facility building size, in $MW$.
@@ -564,11 +597,44 @@ has been created and LandBOSSE has been installed.
 
 ### `LandBOSSERunner`
 
+#### Converting the Excel project list to a dictionary
+
+The below code snippet demonstrates how to convert the project list file for a given project, such
+as the "foundation_validation_ge15" project found in `project_list_simplified.xlsx` that is
+expemplified throughout this walkthrough. Please read the in-code comments for further context
+about what steps are being taken and why.
+
+```python
+import pandas as pd
+
+from landbosse.landbosse_runner import LandBOSSERunner
+
+inputs = LandBOSSERunner(
+    filename="/path/to/LandBOSSE/project_input_template/project_list_simplified.xlsx",
+    project_id="foundation_validation_ge15",
+    enable_cost_and_scaling_modifications=False,
+)
+
+# Add a missing value from the Excel data that is used in the dictionary-based model
+inputs["turbine_capex"] = 3500
+
+# Load the data tables
+# NOTE: the Excel input data as provided in this repository contains neither the path to
+# the file, nor the extension, so they must be added here
+inputs["data_tables"] = pd.read_excel(
+    f"/path/to/LandBOSSE/project_input_template/project_data/{inputs['data_tables']}.xlsx",
+    sheet_name=None,
+)
+```
+
+#### Running the model
+
 1. Determine the desired input and output folder locations for your data.
 2. Configure your project listing Excel file and the project data Excel file for each listed project
    described in [Project Input Data](#project-input-data).
 3. In a Python script, Jupyter Notebook, etc., some form of the following code can be used to run
-   a single project listing.
+   a single project listing. Please read the inline comments for further context about what steps
+   are beging taken and why.
 
    ```python
    from pathlib import Path
