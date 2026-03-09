@@ -3,6 +3,8 @@ a LandBOSSEResult class to contain these results.
 """
 
 import typing
+from copy import deepcopy
+from pathlib import Path
 
 import attrs
 import pandas as pd
@@ -95,34 +97,13 @@ class LandBOSSERunner:
         "labor_cost_multiplier": "Multiplier to modify labor costs",
         "crane_breakdown_fraction": "What fraction of cranes will breakdown. 0 means none, 1 means "
         "all. Breakdowns increase the total erection duration",
-        "component": {
-            "nacelle": {
-                "mass_t": "nacelle mass (t)",
-                "surface_area_m2": "nacelle surface area (m^2)",
-            },
-            "hub": {
-                "mass_t": "hub mass (t)",
-                "surface_area_m2": "hub surface area (m^2)",
-            },
-            "blade": {
-                "mass_t": "Blade mass (t) (one blade)",
-                "surface_area_m2": "Blade surface area (m^2) (one blade)",
-            },
-            "tower_section": {
-                "mass_t": "List of tower section masses (t), from bottom to top. Must be the same "
-                "length as the other tower section attributes",
-                "surface_area_m2": "List of tower section surface areas (m^2), from bottom to top. "
-                "Must be the same legnth as the other tower section attributes",
-                "height_m": "List of tower section heights (m), from bottom to top. Must be the "
-                "same length as the other tower section attributes",
-            },
-        },
+        "user_trench_length_flag": "Flag (0 = no; 1 = yes) to indicate if the user-defined trench length should be used"
     }
 
     # Mapping from new parameter input names to those expected by LandBOSSE
     keys_rename: typing.ClassVar[dict] = {
         "id": "Project ID",
-        "datafile": "Project data file",
+        "data_tables": "Project data file",
         "construction_months": "Total project construction time (months)",
         "turbine_rating_MW": "Turbine rating MW",
         "hub_height_m": "Hub height m",
@@ -172,11 +153,14 @@ class LandBOSSERunner:
         "DW only)",
         "labor_cost_multiplier": "Labor cost multiplier",
         "crane_breakdown_fraction": "Crane breakdown fraction",
+        "combined_homerun_trench_length_km": "Combined Homerun Trench Length to Substation (km)", 
+        "user_trench_length_flag": "Flag for user-defined home run trench length (0 = no; 1 = yes)",
     }
 
     input_config: dict = attrs.field(converter=dict)
     weather: pd.DataFrame = attrs.field(
-        validator=attrs.validators.instance_of(pd.DataFrame),
+        default=None,
+        validator=attrs.validators.optional(attrs.validators.instance_of(pd.DataFrame)),
     )
     result: LandBOSSEResult = attrs.field(
         validator=attrs.validators.instance_of(LandBOSSEResult),
@@ -185,6 +169,38 @@ class LandBOSSERunner:
 
     def __attrs_post_init__(self):
         self.check_expected_configs_are_provided(self.input_config)
+
+    @staticmethod
+    def convert_excel_to_dict(
+        filename: str | Path,
+        project_id: str,
+        *,
+        enable_cost_and_scaling_modifications: bool = False,
+    ) -> dict:
+        """Convert a :py:attr:`project_id` from an Excel project list to a ``LandBOSSERunner``
+        compliant dictionary.
+
+        Parameters
+        ----------
+        filename : str | Path
+            The project list file where the project's data can be found.
+        project_id : str
+            The ID for the project in the "Project ID" column of the project list.
+        enable_cost_and_scaling_modifications : bool, optional
+            Whether or not to enable the cost and scaling modifications, by default False.
+
+        Returns
+        -------
+        dict
+            The project listing data for a given :py:attr:`project_id` converted to a ``LandBOSSERunner``-compliant
+            format.
+        """
+        df = pd.read_excel(filename)
+        data = df.loc[df["Project ID"].eq(project_id)].reset_index(drop=True).loc[0].to_dict()
+        keys_rename = {v: k for k, v in LandBOSSERunner.keys_rename.items()}
+        data = {keys_rename.get(k, k): v for k, v in data.items()}
+        data["enable_cost_and_scaling_modifications"] = enable_cost_and_scaling_modifications
+        return data
 
     def check_expected_configs_are_provided(self, input_config: dict) -> None:
         """Checks to ensure all inputs required by the model have been provided.
@@ -216,8 +232,12 @@ class LandBOSSERunner:
         -------
         pd.Series
             Series containing input parameters for LandBOSSE with the required names
+        dict[str, pd.DataFrame]
+            Dictionary of the Excel project data with each sheet's name as a key and the
+            data loaded as a pandas DataFrame.
         """
-        project_parameters_dict = self.input_config
+        project_parameters_dict = deepcopy(self.input_config)
+        data_sheets = project_parameters_dict.pop("data_tables")
 
         # Convert parameters dict to pandas Series (LandBOSSE expects a Series)
         project_parameters = pd.Series(project_parameters_dict, name="value")
@@ -237,7 +257,7 @@ class LandBOSSERunner:
 
         project_parameters["Project ID with serial"] = project_parameters["Project ID"]
 
-        return project_parameters
+        return project_parameters, data_sheets
 
     def run(self) -> None:
         """Run the LandBOSSE model and save outputs in a LandBOSSEResult object instead of excel
@@ -248,14 +268,11 @@ class LandBOSSERunner:
         LandBOSSEResult
             Outputs from LandBOSSE model
         """
-        project_parameters = self.get_project_parameters()
-        data_sheets = project_parameters.pop("data_table")
+        project_parameters, data_sheets = self.get_project_parameters()
 
-        # Read WAVES weather data into expected LandBOSSE format
-        data_sheets["weather_window"] = self.add_header_to_weather_dataframe(self.weather)
-
-        # Convert YAML component info into table format expected by LandBOSSE
-        data_sheets["components"] = self.create_component_dataframe(project_parameters, data_sheets)
+        # Prioritize weather profile provided at initialization over existing "weather_window" in Excel
+        if self.weather is not None:
+            data_sheets["weather_window"] = self.add_header_to_weather_dataframe(self.weather)
 
         xlsx_reader = XlsxReader()
         xlsx_reader.modify_project_data_and_project_list(data_sheets, project_parameters)
@@ -337,99 +354,6 @@ class LandBOSSERunner:
             ignore_index=True,
         )
         return weather_window
-
-    @staticmethod
-    def create_component_dataframe(
-        project_parameters: pd.Series,
-        data_sheets: dict[str, pd.DataFrame],
-    ) -> pd.DataFrame:
-        """Convert the data from the input component data dictionary to the dataframe format
-        required by LandBOSSE. This includes rows for each separate blade and tower section.
-
-        Parameters
-        ----------
-        project_parameters : pd.Series
-            LandBOSSE YAML inputs
-        data_sheets : dict[str, pd.DataFrame]
-            LandBOSSE excel input tables
-
-        Returns
-        -------
-        pd.DataFrame
-            Component data in LandBOSSE format
-        """
-        NUM_BLADES = 3
-
-        component_param = project_parameters["component"]
-        component_template = data_sheets["components"]
-
-        component_nacelle = pd.Series(component_param["nacelle"], name="Nacelle")
-        component_nacelle["Component Name"] = "Nacelle"
-
-        component_hub = pd.Series(component_param["hub"], name="Hub")
-        component_hub["Component Name"] = "Hub"
-
-        component_blade = component_param["blade"]
-        component_blade["Component Name"] = "Blade"
-
-        component_blade = pd.Series(component_blade)
-        component_blade = pd.concat(
-            objs={f"Blade {i+1:d}": component_blade for i in range(NUM_BLADES)},
-            axis=1,
-        )
-
-        component_tower_section = pd.DataFrame(component_param["tower_section"])
-        component_tower_section["Component Name"] = "Tower section"
-        component_tower_section = component_tower_section.set_axis(
-            [f"Tower section {i+1:d}" for i in range(len(component_tower_section.index))],
-        )
-        component_tower_section["lift_height_m"] = (
-            component_tower_section["height_m"].shift(-1).cumsum()
-        )
-        component_tower_section["lever_arm_m"] = (
-            component_tower_section["lift_height_m"] + component_tower_section["height_m"] / 2.0
-        )
-
-        component_df = pd.concat(
-            objs=(component_nacelle, component_hub, component_blade, component_tower_section.T),
-            axis=1,
-        ).T
-
-        hub_height = project_parameters["Hub height m"]
-        component_df = component_df.astype(
-            {
-                "height_m": float,
-                "lift_height_m": float,
-                "lever_arm_m": float,
-            }
-        )
-        component_df = component_df.fillna(
-            {
-                "height_m": 0.0,
-                "lift_height_m": hub_height,
-                "lever_arm_m": hub_height,
-            }
-        )
-        component_df = component_df.rename(
-            columns={
-                "mass_t": "Mass tonne",
-                "surface_area_m2": "Surface area sq m",
-                "height_m": "Section height m",
-                "lift_height_m": "Lift height m",
-                "lever_arm_m": "Lever arm m",
-            }
-        )
-
-        component_combined = component_df.merge(component_template, on="Component Name")
-        component_combined = component_combined.drop(columns="Component Name")
-        component_combined.insert(
-            loc=0,
-            value=component_df.index,
-            column="Component",
-        )
-        component_combined = component_combined.convert_dtypes()
-
-        return component_combined
 
 
 if __name__ == "__main__":

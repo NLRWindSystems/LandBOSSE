@@ -24,7 +24,9 @@ LandBOSSE is primarily developed with the support of the U.S. Department of Ener
 - [Techno-Economic Modeling Workshop](https://nrel.github.io/WETOStack/workshops/user_workshops_2024.html#tea-and-cost-modeling)
 - [Systems Engineering Workshop](https://nrel.github.io/WETOStack/workshops/user_workshops_2024.html#systems-engineering)
 
-## User Guides
+## User Guide
+
+### Installation
 
 For any installation, users should use a virtual environment. We recommend Miniconda or Anaconda,
 but any supporting PyPI or source installations are possible. Here, we'll work with conda for
@@ -37,13 +39,13 @@ can be any that you prefer as long as it's supported by LandBOSSE.
 conda create -n landbosse python=3.13 -y
 ```
 
-### PyPI
+#### PyPI
 
 ```bash
 pip install NREL-landbosse
 ```
 
-### Source
+#### Source
 
 1. Navigate to your preferred installation location
 2. Clone the repo (or fork and clone your fork, if preferred).
@@ -61,9 +63,7 @@ pip install NREL-landbosse
 
     Optional: `pip install -e .` for editable installations if you plan to modify the code itself.
 
-## User Guides
-
-### First time running teh model
+### First time running the model
 
 At its most basic, the following setup is required, though the provided input data in `project_inpute_template`
 can be used to test out the model and view results before diving into configuring custom scenarios.
@@ -75,8 +75,7 @@ can be used to test out the model and view results before diving into configurin
 3. Each project in `project_list.xlsx` should have a corresponding Excel file in `project_data`
    similar to the examples in `LandBOSSE/project_input_template/project_data`.
 
-
-### Running the model 
+### Running the model
 
 Once the initial steps (above) are followed, we can run the model:
 
@@ -85,17 +84,16 @@ Once the initial steps (above) are followed, we can run the model:
 3. Run the model: `python main.py -i input-folder-path -o output-folder-path` (be sure to replace
    "input-folder-path" and "output-folder-path" with your respective input and output folders).
 
-All together
+   All together, this is:
 
-```bash
-conda activate landbosse
-cd /path/to/LandBOSSE
-python main.py -i /path/to/inputs -o /path/to/outputs
-conda deactivate
-```
+   ```bash
+   conda activate landbosse
+   cd /path/to/LandBOSSE
+   python main.py -i /path/to/inputs -o /path/to/outputs
+   conda deactivate
+   ```
 
 4. View your results in the output folder.
-
 
 ### Integrating LandBOSSE into your code
 
