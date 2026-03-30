@@ -558,17 +558,20 @@ running LandBOSSE through each of these methods.
 Per the installation instructions, this example assumes your conda (or other) Python environment
 has been created and LandBOSSE has been installed.
 
-1. Determine the desired input and output folder locations for your data.
+1. Determine the desired input and output folder locations for your data, ensuring the input folder
+   contains project listing Excel sheets in the top-level of this folder, and all project-specific
+   Excel data in the `project_data` subfolder. This should mirror the
+   [repository's `project_input_template`](https://github.com/NLRWindSystems/LandBOSSE/tree/main/project_input_template).
 2. Configure your project listing Excel file and the project data Excel file for each listed project
    described in [Project Input Data](#project-input-data).
-   
+
    :::{important} The name of the project listing must be called `project_list.xlsx` as it will
    be the only file that is used for running projects.
    :::
 
 3. Open a terminal (or Anaconda Prompt or other) session.
 4. Navigate to where LandBOSSE has been downloaded. In the terminal:
-   
+
    ```bash
    cd /path/to/LandBOSSE
    ```
@@ -597,7 +600,7 @@ has been created and LandBOSSE has been installed.
 
 ### `LandBOSSERunner`
 
-#### Converting the Excel project list to a dictionary
+#### Converting The Excel Project List To A Dictionary
 
 The below code snippet demonstrates how to convert the project list file for a given project, such
 as the "foundation_validation_ge15" project found in `project_list_simplified.xlsx` that is
@@ -627,14 +630,59 @@ inputs["data_tables"] = pd.read_excel(
 )
 ```
 
-#### Running the model
+#### Running In A Python Script
 
-1. Determine the desired input and output folder locations for your data.
+1. Determine the desired input and output folder locations for your data, ensuring the input folder
+   contains project listing Excel sheets in the top-level of this folder, and all project-specific
+   Excel data in the `project_data` subfolder. This should mirror the
+   [repository's `project_input_template`](https://github.com/NLRWindSystems/LandBOSSE/tree/main/project_input_template).
 2. Configure your project listing Excel file and the project data Excel file for each listed project
    described in [Project Input Data](#project-input-data).
-3. In a Python script, Jupyter Notebook, etc., some form of the following code can be used to run
-   a single project listing. Please read the inline comments for further context about what steps
-   are beging taken and why.
+3. Manually load the project data and run the project (single workflow example after step-by-step
+   instructions).
+
+   1. Import the required dependencies.
+
+      ```python
+      from pathlib import Path
+      
+      import yaml
+      import pandas as pd
+    
+      from landbosse.landbosse_runner import LandBOSSERunner
+      ```
+
+   2. Optional: Load the hourly weather profile.
+
+      ```python
+      weather = pd.read_csv("/my/weather/data.csv")
+      weather = LandBOSSERunner.add_header_to_weather_dataframe(weather)
+      ```
+
+   3. Load the project listing Excel data.
+
+      ```python
+      with Path("/path/to/my_project_data.yaml").open() as f:
+          inputs = yaml.safe_load(f)
+      ```
+
+   4. Load the single project's Excel data and connect it to the project listing dictionary above.
+
+      ```python
+      data_path = Path("/path/to/data_tables/").resolve()
+      inputs["data_tables"] = pd.read_excel(
+          data_path /inputs["data_tables"], sheet_name=None
+      )
+      ```
+
+   5. Create the LandBOSSE object and run
+
+      ```python
+      lb = LandBOSSERunner(input_config=inputs, weather=weather)
+      lb.run()
+      ```
+
+   As a single, combined workflow, the below can serve as a base workflow for most projects.
 
    ```python
    from pathlib import Path
