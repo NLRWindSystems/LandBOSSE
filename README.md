@@ -68,7 +68,7 @@ pip install NREL-landbosse
 At its most basic, the following setup is required, though the provided input data in `project_inpute_template`
 can be used to test out the model and view results before diving into configuring custom scenarios.
 
-1. Create an "input" and "output" folder for LandBOSSE to access. If you are using a source
+1. Create an input and output folder for LandBOSSE to access. If you are using a source
    installation, then ensure the folders are not located inside the local copy of the repository.
 2. Create a `project_list.xlsx` like `LandBOSSE/project_list.xlsx` and a subfolder called
    `project_data` inside of `inputs`.
