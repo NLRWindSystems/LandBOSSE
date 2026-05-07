@@ -65,7 +65,7 @@ pip install NREL-landbosse
 
 ### First time running the model
 
-At its most basic, the following setup is required, though the provided input data in `project_inpute_template`
+At its most basic, the following setup is required, though the provided input data in `project_input_template`
 can be used to test out the model and view results before diving into configuring custom scenarios.
 
 1. Create an input and output folder for LandBOSSE to access. If you are using a source
