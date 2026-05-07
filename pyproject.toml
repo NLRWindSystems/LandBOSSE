@@ -32,7 +32,7 @@ classifiers = [
   "Programming Language :: Fortran",
 ]
 
-dependencies = ['numpy', 'openpyxl', 'pandas', 'scipy', 'xlsxwriter']
+dependencies = ['numpy', 'openpyxl', 'pandas', 'scipy', 'xlsxwriter', 'openmdao']
 
 [project.optional-dependencies] # Optional
 test = ["coveralls", "pytest"]
