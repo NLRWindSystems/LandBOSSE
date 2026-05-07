@@ -3,7 +3,7 @@
 [![PyPI version](https://badge.fury.io/py/NREL-landbosse.svg)](https://badge.fury.io/py/NREL-landbosse)
 [![Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![image](https://img.shields.io/pypi/pyversions/NREL-landbosse.svg)](https://pypi.python.org/pypi/NREL-landbosse)
-[![Jupyter Book](https://jupyterbook.org/badge.svg)](https://nlrwindsystems.github.io/LandBOSSE)
+[![Jupyter Book Badge](https://raw.githubusercontent.com/jupyter-book/jupyter-book/next/docs/media/images/badge.svg)](nlrwindsystems.github.io/LandBOSSE)
 
 ## Welcome to LandBOSSE!
 
