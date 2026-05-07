@@ -11,27 +11,16 @@ requires-python = ">=3.10"
 license = { text = "Apache-2.0" }
 keywords = ["wind", "turbine", "mdao", "design", "optimization"]
 authors = [
-  { name = "NREL WISDEM Team", email = "systems.engineering@nrel.gov" },
+  { name = "NLR WISDEM Team", email = "systems.engineering@nlr.gov" },
 ]
 maintainers = [
-  { name = "NREL WISDEM Team", email = "systems.engineering@nrel.gov" },
+  { name = "NLR WISDEM Team", email = "systems.engineering@nlr.gov" },
 ]
-classifiers = [ # Optional
-  # How mature is this project? Common values are
-  #   3 - Alpha
-  #   4 - Beta
-  #   5 - Production/Stable
+classifiers = [
   "Development Status :: 4 - Beta",
-
-  # Indicate who your project is intended for
   "Intended Audience :: Science/Research",
   "Topic :: Scientific/Engineering",
-
   "License :: OSI Approved :: Apache Software License",
-
-  # Specify the Python versions you support here. In particular, ensure
-  # that you indicate you support Python 3. These classifiers are *not*
-  # checked by "pip install". See instead "python_requires" below.
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
@@ -43,41 +32,21 @@ classifiers = [ # Optional
   "Programming Language :: Fortran",
 ]
 
-dependencies = ['numpy', 'openpyxl', 'pandas', 'scipy', 'xlsxwriter']
+dependencies = ['numpy', 'openpyxl', 'pandas', 'scipy', 'xlsxwriter', 'openmdao']
 
-# List additional groups of dependencies here (e.g. development
-# dependencies). Users will be able to install these using the "extras"
-# syntax, for example:
-#
-#   $ pip install sampleproject[dev]
-#
-# Similar to `dependencies` above, these must be valid existing
-# projects.
 [project.optional-dependencies] # Optional
 test = ["coveralls", "pytest"]
 docs = ["jupyter-book==1.*", "myst-parser", "sphinxcontrib-napoleon"]
 develop = ["NREL-landbosse[test, docs]"]
 
-# List URLs that are relevant to your project
-#
-# This field corresponds to the "Project-URL" and "Home-Page" metadata fields:
-# https://packaging.python.org/specifications/core-metadata/#project-url-multiple-use
-# https://packaging.python.org/specifications/core-metadata/#home-page-optional
-#
-# Examples listed include a pattern for specifying where the package tracks
-# issues, where the source is hosted, where to say thanks to the package
-# maintainers, and where to support the project financially. The key is
-# what's used to render the link text on PyPI.
-[project.urls] # Optional
-"Homepage" = "https://github.com/WISDEM/LandBOSSE"
-#"Documentation" = "https://wisdem.readthedocs.io"
-"Project" = "https://www.nrel.gov/wind/systems-engineering.html"
+[project.urls]
+"Homepage" = "https://github.com/NLRWIndSystems/LandBOSSE"
+"Documentation" = "https://nlrwindsystems.readthedocs.io"
+"Project" = "https://www.nlr.gov/wind/systems-engineering.html"
 
 #[project.scripts]
 # What to do about main.py program
 
-# This is configuration specific to the `setuptools` build backend.
-# If you are using a different build backend, you will need to change this.
 [tool.setuptools]
 include-package-data = true
 

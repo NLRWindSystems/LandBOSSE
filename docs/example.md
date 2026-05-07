@@ -113,7 +113,7 @@ Lift height m
 
 Surface area sq m
 : Total surface area, in $m^2$, of a cross-section of the component. This will be used for
-  calculating thefoundational load.
+  calculating the foundational load.
 
 Coeff drag
 : Coefficient of drag. This will be used to understand the effective mass while lifting the component.
@@ -138,7 +138,7 @@ Offload hook height m
 Offload cycle time hrs
 : Amount of time (in hours) required to detach the component from the crane.
 
-Multplier drag rotor
+Multiplier drag rotor
 : Multiplier for accounting for the additional drag of the rotor for computing the foundation load.
   This should only apply to the nacelle and blades
 
@@ -147,7 +147,7 @@ Multiplier tower drag
 
 The following data are used for the GE 1.5 MW public example (`ge15_public.xlsx`).
 
-| Component         |   Mass tonne |   Lift height m |   Surface area sq m |   Coeff drag |   Coeff drag (installed) |   Section height m |   Lever arm m |   Cycle time installation hrs |   Offload hook height m |   Offload cycle time hrs |   Multplier drag rotor |   Multiplier tower drag |
+| Component         |   Mass tonne |   Lift height m |   Surface area sq m |   Coeff drag |   Coeff drag (installed) |   Section height m |   Lever arm m |   Cycle time installation hrs |   Offload hook height m |   Offload cycle time hrs |   Multiplier drag rotor |   Multiplier tower drag |
 |-------------------|--------------|-----------------|---------------------|--------------|--------------------------|--------------------|---------------|-------------------------------|-------------------------|--------------------------|------------------------|-------------------------|
 | Nacelle GE 1.5SLE |         50   |              90 |               33    |          0.8 |                      0.8 |                  0 |            80 |                           1.5 |                       6 |                      0.5 |               1        |                       0 |
 | Hub               |         15.4 |              90 |               11.3  |          1.1 |                      1.1 |                  0 |            80 |                           1   |                       6 |                      0.5 |               0        |                       0 |
@@ -204,7 +204,7 @@ category. The optimal equipment will be chosen based on a comparison of the equi
 capabilities and the components being lifted.
 
 Equipment ID
-: Unique identififer for the equipment group.
+: Unique identifier for the equipment group.
 
 Operation
 : One of "Top", "Base", or "Offload" to indicate what grouping of operations the equipment can
@@ -214,7 +214,7 @@ Equipment name
 : Name of the equipment in the equipment group.
 
 Crane capacity tonne
-: Maximum capacityof the crane, in metric tonnes.
+: Maximum capacity of the crane, in metric tonnes.
 
 Number of equipment
 : Number of the equipment used during the operation.
@@ -259,7 +259,7 @@ Hoist speed m per min
 : Crane lifting rate, in $m/min$.
 
 Crew type ID
-: Unique identifer for the type of crew required for the operation.
+: Unique identifier for the type of crew required for the operation.
 
 Equipment ID
 : Unique identifier matching with the `equip` sheet.
@@ -272,7 +272,7 @@ Breakdown time hr
   lift location.
 
 Max wind speed m per s
-: Maximum allowable windspeed allowed during operations, in $m/s$.
+: Maximum allowable wind speed allowed during operations, in $m/s$.
 
 Hub height m
 : Maximum lift height for the crane, in $m$.
@@ -474,7 +474,7 @@ Rate USD per unit
 : Cost per unit, in $USD/unit$
 
 Units
-: Measurment units.
+: Measurement units.
 
 Daily output
 : Daily output of the operation.
@@ -580,7 +580,7 @@ has been created and LandBOSSE has been installed.
    environment:
 
     ```bash
-    conda activate landbose
+    conda activate landbosse
     ```
 
 6. Run all validLandBOSSE, where `-i` can be substituted for `--input`, and `-o` for `--output`.
@@ -604,7 +604,7 @@ has been created and LandBOSSE has been installed.
 
 The below code snippet demonstrates how to convert the project list file for a given project, such
 as the "foundation_validation_ge15" project found in `project_list_simplified.xlsx` that is
-expemplified throughout this walkthrough. Please read the in-code comments for further context
+exemplified throughout this walkthrough. Please read the in-code comments for further context
 about what steps are being taken and why.
 
 ```python
@@ -714,7 +714,7 @@ inputs["data_tables"] = pd.read_excel(
    lb.run()
    ```
 
-4. Once the above code (or similar) is successfully run, the `result` object is created and attched
+4. Once the above code (or similar) is successfully run, the `result` object is created and attached
    to the `LandBOSSERunner`. For complete details please see the `LandBOSSEResult` API documentation.
    The `lb.result` (using the above examples naming convention for the runner object) contains the
    following attributes as separate Pandas Series or DataFrames, and can be saved to CSV or one

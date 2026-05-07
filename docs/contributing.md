@@ -21,7 +21,7 @@
 ## Testing the Code
 
 Run LandBOSSE's testing suite using the following command. Please note the tests are not
-particularly robust at this time, so passing tests after modifying the codeshould be viewed with
+particularly robust at this time, so passing tests after modifying the code should be viewed with
 caution.
 
 ```bash
