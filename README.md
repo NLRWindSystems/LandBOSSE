@@ -14,15 +14,15 @@ The methods used to develop this model (specifically, LandBOSSE Version 2.1.0) a
 Eberle, Annika, Owen Roberts, Alicia Key, Parangat Bhaskar, and Katherine Dykes.
 2019. NREL’s Balance-of-System Cost Model for Land-Based Wind. Golden, CO:
 National Renewable Energy Laboratory. NREL/TP-6A20-72201.
-https://www.nrel.gov/docs/fy19osti/72201.pdf.
+https://www.nlr.gov/docs/fy19osti/72201.pdf.
 
 ## Part of the WETO Stack
 
-LandBOSSE is primarily developed with the support of the U.S. Department of Energy and is part of the [WETO Software Stack](https://nrel.github.io/WETOStack). For more information and other integrated modeling software, see:
-- [Portfolio Overview](https://nrel.github.io/WETOStack/portfolio_analysis/overview.html)
-- [Entry Guide](https://nrel.github.io/WETOStack/_static/entry_guide/index.html)
-- [Techno-Economic Modeling Workshop](https://nrel.github.io/WETOStack/workshops/user_workshops_2024.html#tea-and-cost-modeling)
-- [Systems Engineering Workshop](https://nrel.github.io/WETOStack/workshops/user_workshops_2024.html#systems-engineering)
+LandBOSSE is primarily developed with the support of the U.S. Department of Energy and is part of the [WETO Software Stack](https://natlabrockies.github.io/WETOStack). For more information and other integrated modeling software, see:
+- [Portfolio Overview](https://natlabrockies.github.io/WETOStack/portfolio_analysis/overview.html)
+- [Entry Guide](https://natlabrockies.github.io/WETOStack/_static/entry_guide/index.html)
+- [Techno-Economic Modeling Workshop](https://natlabrockies.github.io/WETOStack/workshops/user_workshops_2024.html#tea-and-cost-modeling)
+- [Systems Engineering Workshop](https://natlabrockies.github.io/WETOStack/workshops/user_workshops_2024.html#systems-engineering)
 
 ## User Guide
 
@@ -30,7 +30,7 @@ LandBOSSE is primarily developed with the support of the U.S. Department of Ener
 
 For any installation, users should use a virtual environment. We recommend Miniconda or Anaconda,
 but any supporting PyPI or source installations are possible. Here, we'll work with conda for
-compatibility with other NREL tools.
+compatibility with other NLR tools.
 
 In the below, you can replace the name "landbosse" with any name you choose, and the Python version
 can be any that you prefer as long as it's supported by LandBOSSE.
