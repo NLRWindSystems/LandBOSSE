@@ -1,6 +1,6 @@
 # LandBOSSE Changelog
 
-## Unreleased
+## 2.6.3 (May 7, 2026)
 
 + Corrects an error in multiple names defined for `LandBOSSERunner`s data connection to project
   Excel file, which is now called "data_tables", consistent with the implementation made in
