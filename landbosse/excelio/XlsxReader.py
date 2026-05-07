@@ -18,27 +18,16 @@ class XlsxReader:
     of data is read from the following sheets:
 
     - components
-
     - cable_specs
-
     - equip
-
     - crane_specs
-
     - development
-
     - crew_price
-
     - crew
-
     - equip_price
-
     - material_price
-
     - rsmeans
-
     - site_facility_building_area
-
     - weather_window
 
     The second set of data are read from a single sheet as described below.

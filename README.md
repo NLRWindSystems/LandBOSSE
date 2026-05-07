@@ -3,7 +3,7 @@
 [![PyPI version](https://badge.fury.io/py/NREL-landbosse.svg)](https://badge.fury.io/py/NREL-landbosse)
 [![Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![image](https://img.shields.io/pypi/pyversions/NREL-landbosse.svg)](https://pypi.python.org/pypi/NREL-landbosse)
-[![Jupyter Book](https://jupyterbook.org/badge.svg)](https://nlrwindsystems.github.io/LandBOSSE)
+[![Jupyter Book Badge](https://raw.githubusercontent.com/jupyter-book/jupyter-book/next/docs/media/images/badge.svg)](nlrwindsystems.github.io/LandBOSSE)
 
 ## Welcome to LandBOSSE!
 
@@ -14,13 +14,23 @@ The methods used to develop this model (specifically, LandBOSSE Version 2.1.0) a
 Eberle, Annika, Owen Roberts, Alicia Key, Parangat Bhaskar, and Katherine Dykes.
 2019. NREL’s Balance-of-System Cost Model for Land-Based Wind. Golden, CO:
 National Renewable Energy Laboratory. NREL/TP-6A20-72201.
-https://www.nrel.gov/docs/fy19osti/72201.pdf.
+https://www.nlr.gov/docs/fy19osti/72201.pdf.
 
-## Installation
+## Part of the WETO Stack
+
+LandBOSSE is primarily developed with the support of the U.S. Department of Energy and is part of the [WETO Software Stack](https://natlabrockies.github.io/WETOStack). For more information and other integrated modeling software, see:
+- [Portfolio Overview](https://natlabrockies.github.io/WETOStack/portfolio_analysis/overview.html)
+- [Entry Guide](https://natlabrockies.github.io/WETOStack/_static/entry_guide/index.html)
+- [Techno-Economic Modeling Workshop](https://natlabrockies.github.io/WETOStack/workshops/user_workshops_2024.html#tea-and-cost-modeling)
+- [Systems Engineering Workshop](https://natlabrockies.github.io/WETOStack/workshops/user_workshops_2024.html#systems-engineering)
+
+## User Guide
+
+### Installation
 
 For any installation, users should use a virtual environment. We recommend Miniconda or Anaconda,
 but any supporting PyPI or source installations are possible. Here, we'll work with conda for
-compatibility with other NREL tools.
+compatibility with other NLR tools.
 
 In the below, you can replace the name "landbosse" with any name you choose, and the Python version
 can be any that you prefer as long as it's supported by LandBOSSE.
@@ -29,13 +39,13 @@ can be any that you prefer as long as it's supported by LandBOSSE.
 conda create -n landbosse python=3.13 -y
 ```
 
-### PyPI
+#### PyPI
 
 ```bash
 pip install NREL-landbosse
 ```
 
-### Source
+#### Source
 
 1. Navigate to your preferred installation location
 2. Clone the repo (or fork and clone your fork, if preferred).
@@ -53,22 +63,19 @@ pip install NREL-landbosse
 
     Optional: `pip install -e .` for editable installations if you plan to modify the code itself.
 
-## User Guides
+### First time running the model
 
-### First time running teh model
-
-At its most basic, the following setup is required, though the provided input data in `project_inpute_template`
+At its most basic, the following setup is required, though the provided input data in `project_input_template`
 can be used to test out the model and view results before diving into configuring custom scenarios.
 
-1. Create an "input" and "output" folder for LandBOSSE to access. If you are using a source
+1. Create an input and output folder for LandBOSSE to access. If you are using a source
    installation, then ensure the folders are not located inside the local copy of the repository.
 2. Create a `project_list.xlsx` like `LandBOSSE/project_list.xlsx` and a subfolder called
    `project_data` inside of `inputs`.
 3. Each project in `project_list.xlsx` should have a corresponding Excel file in `project_data`
    similar to the examples in `LandBOSSE/project_input_template/project_data`.
 
-
-### Running the model 
+### Running the model
 
 Once the initial steps (above) are followed, we can run the model:
 
@@ -77,17 +84,16 @@ Once the initial steps (above) are followed, we can run the model:
 3. Run the model: `python main.py -i input-folder-path -o output-folder-path` (be sure to replace
    "input-folder-path" and "output-folder-path" with your respective input and output folders).
 
-All together
+   All together, this is:
 
-```bash
-conda activate landbosse
-cd /path/to/LandBOSSE
-python main.py -i /path/to/inputs -o /path/to/outputs
-conda deactivate
-```
+   ```bash
+   conda activate landbosse
+   cd /path/to/LandBOSSE
+   python main.py -i /path/to/inputs -o /path/to/outputs
+   conda deactivate
+   ```
 
 4. View your results in the output folder.
-
 
 ### Integrating LandBOSSE into your code
 

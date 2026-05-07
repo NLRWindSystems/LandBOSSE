@@ -158,7 +158,7 @@ class FoundationCost(CostModule):
         * Section height m
         * Surface area sq m
         * Coeff drag (installed)
-        * Lever arm m m
+        * Lever arm m
         * Multplier drag rotor
         * Multiplier tower drag
         * Mass tonne

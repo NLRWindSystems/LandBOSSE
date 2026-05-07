@@ -144,7 +144,7 @@ class ErectionCost(CostModule):
                         material_price
                             (pd.DatFrame) Prices for various materials used during erection.
                         rsmeans
-                            (p.DataFrame) RSMeans data
+                            (pd.DataFrame) RSMeans data
         output_dict : dict
             The output dictionary with key value pairs as found on the
                 output documentation.
